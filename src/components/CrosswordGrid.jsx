@@ -1,3 +1,4 @@
+import { useState } from "react";
 
 
 
@@ -32,7 +33,9 @@ function buildGrid(puzzles, rows, cols) {
   return grid;
 }
 
-function WordEntry({ word, solvedWords, puzzles, letters, setLetters, checkAnswer }) {
+function WordEntry({ word, solvedWords, puzzles, letters, setLetters, checkAnswer, onSelectWord }) {
+  const [showHint, setShowHint] = useState(false);
+  const wordIndex = puzzles.findIndex((item) => item.id === word.id);
   const answer = [...word.answer].map((_, index) => letters[`${word.row + (word.direction === "down" ? index : 0)}-${word.col + (word.direction === "across" ? index : 0)}`] || " ").join("").trimEnd();
   const solved = solvedWords.includes(word.id);
 
@@ -54,7 +57,14 @@ function WordEntry({ word, solvedWords, puzzles, letters, setLetters, checkAnswe
 
   return (
     <section className="mobile-word-entry" aria-label="Selected word">
-      <p className="eyebrow">{word.number} {word.direction} · {word.answer.length} letters</p>
+      <div className="mobile-clue-nav">
+        <button type="button" aria-label="Previous question" onClick={() => onSelectWord(puzzles[(wordIndex - 1 + puzzles.length) % puzzles.length])}>←</button>
+        <select aria-label="Choose a question" value={word.id} onChange={(event) => onSelectWord(puzzles.find((item) => item.id === Number(event.target.value)))}>
+          {puzzles.map((item, index) => <option key={item.id} value={item.id}>Question {index + 1} of {puzzles.length}{solvedWords.includes(item.id) ? ' · ✓' : ''}</option>)}
+        </select>
+        <button type="button" aria-label="Next question" onClick={() => onSelectWord(puzzles[(wordIndex + 1) % puzzles.length])}>→</button>
+      </div>
+      <p className="eyebrow">{word.number} {word.direction} · {word.answer.length} letters · {word.theme}</p>
       <label htmlFor="mobile-answer">{word.clue}</label>
       <div className="mobile-answer-actions">
         <input id="mobile-answer" type="text" value={solved ? word.answer : answer} onChange={updateAnswer}
@@ -63,7 +73,8 @@ function WordEntry({ word, solvedWords, puzzles, letters, setLetters, checkAnswe
           onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); checkAnswer(); } }} />
         <button type="button" onClick={checkAnswer} disabled={solved}>{solved ? "Solved ✓" : "Check"}</button>
       </div>
-      <a href="#clue-panel">View hints and all clues ↓</a>
+      <button className="mobile-hint-button" type="button" aria-expanded={showHint} aria-controls="mobile-hint" onClick={() => setShowHint(!showHint)}>{showHint ? 'Hide hint' : 'Need a hint?'}</button>
+      {showHint && <p id="mobile-hint" className="hint-text">{word.hint}</p>}
     </section>
   );
 }
@@ -143,9 +154,9 @@ function CrosswordGrid({
 
   return (
     <>
-      <WordEntry key={selectedWord.id} word={selectedWord} puzzles={puzzles} solvedWords={solvedWords} letters={letters} setLetters={setLetters} checkAnswer={checkAnswer} />
+      <WordEntry key={selectedWord.id} onSelectWord={onSelectWord} word={selectedWord} puzzles={puzzles} solvedWords={solvedWords} letters={letters} setLetters={setLetters} checkAnswer={checkAnswer} />
       {feedback && <p className="mobile-feedback feedback" role="status">{feedback}</p>}
-      <p className="board-scroll-help" id="board-scroll-help">The whole board fits below. You can also type your answer above.</p>
+      <p className="board-scroll-help" id="board-scroll-help">Choose a question above or tap a word on the board.</p>
       <div className="crossword-scroll" role="region" aria-label="Crossword board" aria-describedby="board-scroll-help" tabIndex={0}>
     <div className="crossword-grid" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`, maxWidth: `min(100%, 620px, ${75 * cols / rows}svh)` }}>
       {grid.map((row, rowIndex) =>

@@ -40,7 +40,7 @@
 .crossword-grid { min-width: 0; gap: 2px; container-type: inline-size; }
 .crossword-grid .grid-cell input { font-size: clamp(8px, 2.7cqw, 16px); padding: 4px 0 0; }
 .crossword-grid .cell-number { font-size: clamp(5px, 1.4cqw, 8px); top: 0; left: 1px; }
-.grid-cell.blocked { background: transparent; border-color: transparent; }
+.grid-cell.blocked { background: #17334c; border-color: #385670; }
 .grid-cell { border-radius: 1px; }
 .panel-heading { flex-wrap: wrap; margin-bottom: 18px; }
 .panel-heading h2 { margin: 0; }
@@ -57,3 +57,71 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
 .crossword-grid .grid-cell input:focus { box-shadow: inset 0 0 0 2px #8ac2eb; }
 .crossword-grid .grid-cell.solved-cell,
 .crossword-grid .grid-cell.solved-cell input { background: #d9fbe7; color: #14532d; }
+
+/* Phone play keeps every question control beside the answer field. */
+@media (max-width: 1100px) {
+  .clue-panel { display: none; }
+  .mobile-word-entry { margin-bottom: 8px; }
+  .mobile-clue-nav { display: flex; align-items: center; gap: 8px; }
+  .mobile-clue-nav button, .mobile-clue-nav select { min-height: 44px; border: 1px solid #496889; border-radius: 6px; background: #16344f; color: #f4f8ff; font: inherit; }
+  .mobile-clue-nav button { width: 44px; flex-shrink: 0; font-size: 22px; cursor: pointer; }
+  .mobile-clue-nav select { flex: 1; min-width: 0; padding: 8px; font-size: 14px; }
+  .mobile-word-entry .eyebrow { margin: 12px 0 8px; font-size: 10px; }
+  .mobile-word-entry label { font-size: 17px; line-height: 1.4; margin-bottom: 10px; }
+  .mobile-hint-button { min-height: 44px; padding: 8px 0; border: 0; color: #b5d8ff; background: transparent; cursor: pointer; }
+  .mobile-word-entry .hint-text { margin: 0 0 10px; font-size: 13px; }
+  .board-scroll-help { margin: 6px 0 10px; font-size: 12px; }
+  .mobile-feedback { margin: 4px 0 8px; }
+}
+@media (max-width: 680px) {
+  .game-page { padding-top: 12px; }
+  .game-header { display: flex; flex-direction: row; flex-wrap: wrap; gap: 8px; padding: 0; margin-bottom: 12px; }
+  .game-header .eyebrow { display: none; }
+  .game-header h1 { font-size: 20px; }
+  .game-header .team-label { margin: 4px 0; font-size: 12px; }
+  .game-stats { gap: 6px; }
+  .game-stats .stat-card { flex-direction: row; align-items: center; justify-content: space-between; gap: 4px; padding: 8px; border-radius: 6px; }
+  .game-stats .stat-card strong { font-size: 17px; }
+  .game-stats .stat-card span { font-size: 9px; }
+  .panel-heading { display: none; }
+}
+
+.phone-game { display: none; }
+@media (max-width: 680px) {
+  .game-page:has(.phone-game) { background: #111318; padding: 12px; }
+  .game-page:has(.phone-game) .game-layout { display: none; }
+  .game-page:has(.phone-game) .game-header { max-width: 460px; margin: 0 auto 12px; }
+  .game-page:has(.phone-game) .game-header h1 { font-size: 17px; }
+  .game-page:has(.phone-game) .stat-card { background: #252830; border-color: #3d414b; }
+  .phone-game { display: block; max-width: 460px; margin: 0 auto; padding: 16px; border-radius: 22px; background: #2e3035; }
+  .phone-level-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 16px; }
+  .phone-level-nav button { min-width: 44px; min-height: 44px; border: 0; background: transparent; color: #f6f6fa; font-size: 24px; }
+  .phone-game progress { display: block; appearance: none; width: 100%; height: 7px; border: 0; border-radius: 10px; margin: 12px 0 20px; overflow: hidden; background: #1e2025; }
+  .phone-game progress::-webkit-progress-bar { background: #1e2025; }
+  .phone-game progress::-webkit-progress-value { background: #aaaefe; border-radius: 10px; }
+  .phone-game progress::-moz-progress-bar { background: #aaaefe; }
+  .phone-answer-tiles { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 18px; }
+  .phone-answer-tiles button { flex: 0 0 calc((100% - 36px) / 7); aspect-ratio: 1; min-width: 0; border: 2px solid transparent; border-radius: 7px; background: #1e2025; color: #fff; font-size: clamp(18px, 5vw, 25px); font-weight: bold; }
+  .phone-answer-tiles .phone-active-tile { background: #c5dfff; color: #142840; border-color: #e2efff; }
+  .phone-answer-tiles button:disabled { opacity: 1; }
+  .phone-tiles-wrong button { border-color: #ff969f; }
+  .phone-tiles-correct button { background: #174a34; border-color: #87deb0; color: #cbffe1; }
+  .phone-question { padding: 14px; background: #16171c; border-radius: 12px; }
+  .phone-question p { margin: 0 0 8px; color: #bfc3d0; text-transform: uppercase; font-size: 10px; letter-spacing: 1px; }
+  .phone-question h2 { margin: 0; font-size: 19px; line-height: 1.4; font-weight: 500; }
+  .phone-feedback { padding: 10px 12px; margin: 10px 0; font-size: 13px; line-height: 1.4; border: 1px solid transparent; border-radius: 8px; color: #c1c6d1; }
+  .phone-wrong { background: #51252d; border-color: #fb8d98; color: #ffd6db; }
+  .phone-correct { background: #174a34; border-color: #83d6a9; color: #c8ffe0; }
+  .phone-keyboard { display: grid; gap: 6px; margin: 12px -6px; }
+  .phone-keyboard > div { display: flex; justify-content: center; gap: 4px; }
+  .phone-keyboard button { width: calc((100% - 36px) / 10); min-height: 44px; padding: 0; border: 0; border-radius: 6px; background: #1e2025; color: #fff; font-size: 14px; }
+  .phone-keyboard button:active { background: #c5dfff; color: #142840; }
+  .phone-actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 16px; }
+  .phone-actions button { min-height: 48px; border-radius: 12px; border: 0; font: inherit; }
+  .phone-tool { background: transparent; color: #d6d9e3; min-width: 48px; }
+  .phone-tool:disabled { opacity: .4; }
+  .phone-check { padding: 12px 30px; background: #c5dfff; color: #142840; font-weight: bold !important; }
+  .phone-hint { color: #dedfff; font-size: 13px; line-height: 1.5; padding: 10px; margin: 8px 0; background: #222431; border-radius: 8px; }
+  .game-page:has(.phone-game) .game-footer { max-width: 460px; margin: 12px auto 0; }
+  .game-page:has(.phone-game) .game-footer > span { display: none; }
+}

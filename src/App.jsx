@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
 import "./reference.css";
 import WallPreview from "./components/WallPreview";
+import PhoneGame from "./components/PhoneGame";
 import { domains, getDomainPuzzles } from "./data/domains";
 import CrosswordGrid from "./components/CrosswordGrid";
 import CluePanel from "./components/CluePanel";
@@ -262,6 +263,7 @@ function App() {
           solvedCount={solvedWords.length}
           totalWords={puzzles.length}
         />
+        <PhoneGame onEdit={() => setFeedback("")} key={selectedWord.id} puzzles={puzzles} selectedWord={selectedWord} solvedWords={solvedWords} letters={letters} setLetters={setLetters} onSelectWord={selectWord} checkAnswer={checkAnswer} feedback={feedback} />
         <section className="game-layout">
           <div className="crossword-panel">
             <div className="panel-heading">
