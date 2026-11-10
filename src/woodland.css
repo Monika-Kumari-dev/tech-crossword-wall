@@ -1,0 +1,173 @@
+:root {
+  --ink: #fff5d8;
+  --wood-dark: #38281e;
+  --wood-border: #483020;
+  --wood: #765034;
+  --muted: #e3cfaa;
+  --teal: #36b6b5;
+  --lime: #a8c95c;
+}
+.app, .game-page {
+  background: linear-gradient(#16261950, #192a1940), url('/woodland.svg') center / cover fixed;
+  color: var(--ink);
+  font-family: 'Trebuchet MS', Arial, sans-serif;
+}
+.welcome-card, .crossword-panel, .clue-panel, .organizer-panel {
+  background: repeating-linear-gradient(3deg, transparent 0 39px, #36241730 40px 42px, transparent 43px 79px), linear-gradient(100deg, #805739, #63432f 50%, #815c3d);
+  border: 4px solid var(--wood-border);
+  border-radius: 16px 24px 14px 20px;
+  box-shadow: inset 0 3px 0 #b28b5d, inset 0 -5px 0 #4b3326, 0 9px 0 #30251dc9, 0 18px 40px #15221280;
+}
+.welcome-card { max-width: 580px; position: relative; padding-top: 32px; }
+.welcome-card::before, .welcome-card::after {
+  content: ''; position: absolute; top: 18px; width: 9px; height: 9px; border-radius: 50%;
+  background: #352b24; box-shadow: inset 1px 2px 1px #171c16, 0 1px 0 #b38a59;
+}
+.welcome-card::before { left: 18px; }
+.welcome-card::after { right: 18px; }
+.game-icon { background: #35472a; color: #d5e995; border: 3px solid #b0bd67; box-shadow: 0 4px 0 #33271b; border-radius: 50%; font-size: 30px; width: 54px; height: 54px; margin-bottom: 16px; }
+h1 { color: #fffdf0; font-family: 'Arial Black', 'Trebuchet MS', sans-serif; font-weight: 1000; letter-spacing: -1.5px; text-shadow: 2px 4px 0 #372a20; }
+h1 span, .game-header h1 span { color: #e3efb4; }
+.welcome-card h1 { font-size: clamp(30px, 6vw, 50px); line-height: 1.1; }
+.eyebrow, .clue-category { color: #dceda7; }
+.description, .answer-instructions, .team-label, .panel-heading span, .grid-help, .game-footer, .board-scroll-help, .organizer-heading p:not(.eyebrow), .result-stats span { color: var(--muted); }
+.welcome-card label, .answer-box label, .organizer-panel, .leaderboard h2 { color: var(--ink); }
+.welcome-card input, .mobile-answer-actions input {
+  background: #30291f; border: 2px solid #bc9762; color: #fff8df; border-radius: 8px; box-shadow: inset 0 3px 6px #201e1a70;
+}
+input::placeholder { color: #cbb897; opacity: 1; }
+.welcome-card input:focus, .mobile-answer-actions input:focus { outline: 3px solid #edcc72; outline-offset: 2px; border-color: #edcc72; }
+.welcome-card button, .answer-box button, .mobile-answer-actions button, .organizer-actions button, .reset-button {
+  background: repeating-linear-gradient(177deg, transparent 0 23px, #125d5b35 24px 25px, transparent 26px 42px), var(--teal);
+  color: #172f27; border: 3px solid #3e3323; border-radius: 7px 12px 6px 10px;
+  box-shadow: inset 0 3px 0 #ffffff60, inset 0 -4px 0 #235d4b50, 0 5px 0 #34291e;
+  font-family: 'Trebuchet MS', Arial, sans-serif; font-weight: 900; cursor: pointer; min-height: 48px;
+  transition: transform 120ms ease, filter 120ms ease;
+}
+.welcome-card > button { text-transform: uppercase; font-size: 23px; letter-spacing: 1px; }
+.welcome-card button:hover, .answer-box button:hover, .mobile-answer-actions button:hover, .organizer-actions button:hover, .reset-button:hover { filter: brightness(1.1); background-color: var(--teal); transform: translateY(-1px); }
+button:active { transform: translateY(3px); }
+.welcome-card .organizer-link { background: repeating-linear-gradient(177deg, transparent 0 27px, #47672f40 28px 29px, transparent 30px 44px), var(--lime) !important; color: #263820 !important; border: 3px solid #3e3323 !important; font-size: 18px; }
+.footer-text { color: #ebd5a5; letter-spacing: 2px; }
+.game-header { background: #283c29eb; border: 3px solid #948a50; padding: 20px; border-radius: 16px; box-shadow: 0 5px 0 #30271e; }
+.stat-card { background: #493728; border: 2px solid #b08b53; box-shadow: inset 0 2px 0 #d9b37440; }
+.stat-card span { color: #e8d3a8; }
+.stat-card strong, .result-stats strong { color: #f4d27c; }
+.crossword-scroll { scrollbar-color: #d3ae6d #493626; }
+.crossword-grid { gap: 3px; }
+.grid-cell { background: #fff0ca; border: 1px solid #b08a53; border-radius: 3px; }
+.grid-cell.blocked { background: #35281f65; border-color: transparent; }
+.grid-cell input { color: #392c20; }
+.grid-cell.selected-cell, .grid-cell.selected-cell input { background: #a7e4da; border-color: #247a72; }
+.grid-cell.solved-cell, .grid-cell.solved-cell input { background: #d7ed9d; color: #2c471e; }
+.grid-cell input:focus { box-shadow: inset 0 0 0 3px #268678; }
+.clue-card { background: #f4e3bc; border: 2px solid #493324; color: #3d3022; box-shadow: 0 3px 0 #3c2c20; }
+.clue-card strong { color: #4c602f; }
+.clue-card.active-clue { border: 2px solid #8fe2ce; background: #d8efdc; box-shadow: 0 3px 0 #21594e; }
+.clue-card.solved-clue { background: #dbe9b3; border-color: #72924b; }
+.clue-card small { color: #355621; font-weight: bold; }
+.clue-category, .answer-box, .leaderboard-row { border-color: #bc96615e; }
+.hint-section { background: #3d3024; border: 2px solid #d0a658; }
+.answer-box .hint-button { background: #e5b94f; color: #3c301d; border: 2px solid #3e3323; }
+.answer-box .hint-button:hover { background-color: #e5b94f; }
+.hint-text, .feedback { color: #fff0b8; }
+.mobile-word-entry a { color: #e0efb1; }
+.organizer-actions .danger-button { background: #c56f54; color: #251e17; }
+.organizer-actions .secondary-button, .reset-button { background-color: #e5b94f; color: #392c1c; border: 3px solid #493324; }
+.organizer-row { border-color: #bb955b; background: #43332580; }
+.team-count { background: #b9ce77; color: #2c3f24; font-weight: bold; }
+.leaderboard-row { color: var(--ink); }
+.empty-state { color: var(--muted); border-color: #bb955b; }
+button:focus-visible, a:focus-visible, .crossword-scroll:focus-visible { outline: 3px solid #ffe399; outline-offset: 4px; }
+button:disabled { cursor: default; transform: none; filter: none; }
+@media (max-width: 680px) {
+  .app, .game-page { background-attachment: scroll; }
+  .game-header { padding: 14px; }
+  .welcome-card { padding: 28px 20px; }
+  .welcome-card > button { font-size: 21px; }
+  .welcome-card .organizer-link { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { button { transition: none !important; } }
+
+/* Compact welcome screen; results and game panels keep their own spacing. */
+.home-page {
+  padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+  align-items: center;
+}
+.home-page .welcome-card { max-width: 440px; padding: 22px 24px; }
+.home-page .game-icon { width: 36px; height: 36px; font-size: 22px; margin: 0 auto 8px; }
+.home-page .eyebrow { margin: 6px 0; font-size: 10px; letter-spacing: 2px; }
+.home-page h1 { margin: 10px 0 12px; font-size: clamp(28px, 6vw, 36px); line-height: 1.05; }
+.home-page .description { margin: 0 auto 16px; font-size: 14px; line-height: 1.45; }
+.home-page label { margin-bottom: 6px; font-size: 11px; letter-spacing: .5px; }
+.home-page input { min-height: 44px; padding: 10px 12px; }
+.home-page .welcome-card > button { min-height: 44px; padding: 9px 12px; margin-top: 12px; font-size: 20px; }
+.home-page .welcome-card .organizer-link { font-size: 15px; margin-top: 10px; }
+.home-page .footer-text { margin: 16px 0 0; font-size: 9px; }
+@media (max-height: 640px) {
+  .home-page .welcome-card { padding: 16px 20px; }
+  .home-page .game-icon { width: 28px; height: 28px; font-size: 17px; margin-bottom: 4px; }
+  .home-page h1 { font-size: 28px; margin: 8px 0; }
+  .home-page .description { margin-bottom: 10px; font-size: 13px; }
+  .home-page .footer-text { margin-top: 10px; }
+}
+@media (max-height: 480px) and (min-width: 560px) {
+  .home-page .welcome-card { max-width: 700px; display: grid; grid-template-columns: 1fr 1fr; column-gap: 24px; align-items: center; }
+  .home-page .game-icon, .home-page .eyebrow, .home-page h1, .home-page .description { grid-column: 1; }
+  .home-page .game-icon { grid-row: 1; }
+  .home-page .eyebrow { grid-row: 2; }
+  .home-page h1 { grid-row: 3 / 5; }
+  .home-page .description { grid-row: 5 / 7; }
+  .home-page label { grid-column: 2; grid-row: 1 / 3; align-self: end; }
+  .home-page input { grid-column: 2; grid-row: 3; }
+  .home-page .welcome-card > button { grid-column: 2; grid-row: 4; }
+  .home-page .welcome-card .organizer-link { grid-row: 5; }
+  .home-page .footer-text { grid-column: 2; grid-row: 6; }
+}
+
+/* A compact banner spanning the available page width. */
+.game-header {
+  width: 100%;
+  max-width: none;
+  margin: 0 0 16px;
+  padding: 10px 16px;
+  gap: 16px;
+  border-width: 2px;
+  border-radius: 10px;
+  flex-direction: row;
+  align-items: center;
+}
+.game-header h1 { font-size: clamp(20px, 2vw, 28px); line-height: 1.15; letter-spacing: -0.5px; }
+.game-header h1 span { display: inline; }
+.game-header .eyebrow { margin: 0 0 5px; font-size: 10px; letter-spacing: 2px; }
+.game-header .team-label { margin: 5px 0 0; font-size: 13px; }
+.game-header .game-stats { width: auto; flex-shrink: 0; gap: 8px; }
+.game-header .stat-card { min-width: 76px; padding: 8px 10px; gap: 3px; border-radius: 8px; }
+.game-header .stat-card span { font-size: 10px; }
+.game-header .stat-card strong { font-size: 21px; }
+@media (max-width: 600px) {
+  .game-header { flex-wrap: wrap; padding: 10px 12px; gap: 10px; }
+  .game-header .game-stats { flex: 1 1 100%; width: 100%; }
+  .game-header .stat-card { flex: 1; min-width: 0; padding: 6px 8px; flex-direction: row; justify-content: space-between; align-items: center; }
+  .game-header .stat-card strong { font-size: 18px; }
+  .game-header .eyebrow { letter-spacing: 1px; }
+}
+
+/* Fit the complete board inside the panel at every screen size. */
+.crossword-panel { min-width: 0; }
+.crossword-grid { min-width: 0; gap: 2px; container-type: inline-size; }
+.crossword-grid .grid-cell input { padding: 4px 0 0; font-size: clamp(8px, 2.7cqw, 16px); }
+.crossword-grid .cell-number { font-size: clamp(5px, 1.4cqw, 8px); top: 0; left: 1px; }
+@media (max-width: 680px) {
+  .crossword-grid { gap: 1px; }
+  .crossword-grid .grid-cell { border: 0; border-radius: 1px; }
+  .crossword-grid .grid-cell input { padding-top: 3px; }
+}
+
+.welcome-card select { width: 100%; min-height: 44px; padding: 10px 12px; border: 2px solid #bc9762; border-radius: 8px; background: #30291f; color: #fff8df; font: inherit; }
+.welcome-card select:focus-visible { outline: 3px solid #edcc72; outline-offset: 2px; }
+.domain-summary { margin: 8px 0 18px; text-align: left; color: var(--muted); font-size: 12px; }
+.result-domain { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; font-weight: normal; }
+@media (max-height: 480px) and (min-width: 560px) {
+  .home-page .welcome-card { display: block; max-width: 440px; }
+}

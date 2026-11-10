@@ -1,0 +1,59 @@
+:root { color-scheme: dark; font-family: Arial, sans-serif; }
+.app, .game-page { background: #041628; color: #f8fafc; }
+.home-page { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(340px, .85fr); gap: clamp(40px, 8vw, 140px); padding: 48px max(5vw, 24px); align-items: center; }
+.home-page .welcome-card { max-width: 760px; padding: 0; text-align: left; background: none; border: 0; box-shadow: none; border-radius: 0; }
+.home-page h1 { margin: 24px 0 30px; font-size: clamp(38px, 4vw, 64px); font-weight: 400; letter-spacing: -1.8px; line-height: 1.12; }
+.home-page .description { max-width: 650px; margin: 0 0 24px; color: #f1f4fa; font-size: clamp(17px, 1.5vw, 23px); line-height: 1.5; }
+.eyebrow { color: #9ebcf6; }
+.theme-tags { justify-content: flex-start; gap: 8px; margin-bottom: 30px; }
+.theme-tags span { background: #10283f; color: #c7d9f5; border: 1px solid #29435c; font-size: 12px; padding: 7px 12px; }
+.welcome-form { max-width: 480px; }
+.welcome-card label { font-size: 11px; letter-spacing: 1.4px; }
+.welcome-card select, .welcome-card input { width: 100%; min-height: 48px; border: 1px solid #3e5670; border-radius: 6px; padding: 12px 14px; background: #0d2238; color: white; font: inherit; }
+.domain-summary { color: #9cb2cc; margin: 8px 0 20px; font-size: 12px; }
+.welcome-card button { min-height: 48px; border-radius: 6px; background: #255de7; color: white; }
+.welcome-card button:hover { background: #3770ff; }
+.welcome-card .organizer-link { background: transparent !important; color: #bacee8 !important; border: 0 !important; font-size: 13px; min-height: 40px; margin-top: 5px; }
+.home-page .footer-text { color: #9cb2cc; margin: 24px 0 8px; letter-spacing: 1.5px; }
+.source-note { color: #8ba2bc; font-size: 10px; line-height: 1.6; }
+.wall-preview { background: #f1f1ef; color: #0b1d31; padding: 28px 30px 20px; box-shadow: 12px 12px 0 #ffffff0b; border: 1px solid #d7d9dc; transform: rotate(-1deg); max-width: 510px; width: 100%; justify-self: center; color-scheme: light; }
+.wall-topline { display: flex; justify-content: space-between; font-size: 9px; font-weight: bold; letter-spacing: 1.5px; color: #596779; }
+.wall-preview h2 { font-size: clamp(28px, 3vw, 43px); line-height: 1.05; letter-spacing: -1.5px; margin: 24px 0; }
+.wall-preview h2 span { color: #174dcc; }
+.preview-grid { display: grid; grid-template-columns: repeat(8, 1fr); margin: 4px 0 22px; }
+.preview-cell, .preview-empty { aspect-ratio: 1; position: relative; }
+.preview-cell { border: 1px solid #22334d; margin: -.5px; display: grid; place-items: center; }
+.preview-cell small { position: absolute; left: 3px; top: 1px; font-size: 9px; }
+.preview-cell span { color: #194baa; background: #fff; padding: 2px 6px; box-shadow: 1px 3px 5px #0002; font-size: clamp(14px, 1.6vw, 25px); font-weight: bold; }
+.preview-clues { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.preview-clues > div { background: #fff9; border-radius: 10px; padding: 12px; }
+.preview-clues h3 { margin: 0 0 14px; padding: 5px 14px; width: fit-content; background: #1648b0; color: white; border-radius: 30px; font-size: 11px; }
+.preview-clues p { display: flex; align-items: baseline; gap: 7px; font-size: 11px; line-height: 1.5; }
+.preview-clues b { color: #3159a6; }
+.wall-caption { text-align: center; font-size: 10px; color: #6b7583; margin: 20px 0 0; }
+.game-header { max-width: 1250px; padding: 10px 0; }
+.game-header h1 { font-size: 28px; }
+.game-header h1 span { display: inline; color: #8fb3ff; }
+.game-header .team-label { font-size: 13px; }
+.crossword-panel, .clue-panel, .organizer-panel { background: #0c2238; border-color: #29435c; border-radius: 10px; }
+.crossword-panel { min-width: 0; }
+.crossword-grid { min-width: 0; gap: 2px; container-type: inline-size; }
+.crossword-grid .grid-cell input { font-size: clamp(8px, 2.7cqw, 16px); padding: 4px 0 0; }
+.crossword-grid .cell-number { font-size: clamp(5px, 1.4cqw, 8px); top: 0; left: 1px; }
+.grid-cell.blocked { background: transparent; border-color: transparent; }
+.grid-cell { border-radius: 1px; }
+.panel-heading { flex-wrap: wrap; margin-bottom: 18px; }
+.panel-heading h2 { margin: 0; }
+.panel-heading span { font-size: 12px; }
+.answer-box button, .mobile-answer-actions button { background: #255de7; color: white; }
+button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid #9cbfff; outline-offset: 3px; }
+@media (max-width: 900px) { .home-page { grid-template-columns: 1fr; gap: 36px; padding: 36px 24px; } .home-page .welcome-card { max-width: 650px; justify-self: center; width: 100%; } .welcome-form { max-width: none; } .wall-preview { max-width: 440px; transform: none; } .home-page h1 { letter-spacing: -1px; } }
+@media (max-width: 680px) { .home-page { padding: 24px 20px 36px; } .home-page h1 { font-size: 40px; margin: 20px 0; } .home-page .description { font-size: 17px; } .wall-preview { padding: 24px; } .preview-cell span { font-size: 22px; } .game-header h1 { font-size: 24px; } }
+
+/* Larger letter boxes and a softer selection highlight. */
+.crossword-grid { width: 100%; }
+.crossword-grid .grid-cell.selected-cell { background: #e3f3ff; border-color: #9bcdf0; }
+.crossword-grid .grid-cell.selected-cell input { background: #e3f3ff; }
+.crossword-grid .grid-cell input:focus { box-shadow: inset 0 0 0 2px #8ac2eb; }
+.crossword-grid .grid-cell.solved-cell,
+.crossword-grid .grid-cell.solved-cell input { background: #d9fbe7; color: #14532d; }

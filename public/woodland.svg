@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1100" viewBox="0 0 1440 1100" fill="none">
+<defs>
+ <linearGradient id="sky" x2="0" y2="1100" gradientUnits="userSpaceOnUse"><stop stop-color="#243c28"/><stop offset=".55" stop-color="#6d8d51"/><stop offset="1" stop-color="#c4cb77"/></linearGradient>
+ <linearGradient id="bark"><stop stop-color="#563e2b"/><stop offset=".5" stop-color="#a16d42"/><stop offset="1" stop-color="#6b482e"/></linearGradient>
+ <radialGradient id="light"><stop stop-color="#f8eaa2" stop-opacity=".4"/><stop offset="1" stop-color="#f8eaa2" stop-opacity="0"/></radialGradient>
+ <g id="tree"><path d="M58 1080C109 855 68 693 99 489L65 257 165 186 218 380 245 92 335 65 300 463C323 638 274 854 363 1080Z" fill="url(#bark)" stroke="#362b20" stroke-width="8"/><path d="M180 950C221 744 148 624 182 465L146 280M262 988C225 765 276 615 245 510M112 785L156 739M291 591L254 550" stroke="#4e3625" stroke-width="9" stroke-linecap="round"/><path d="M206 520C102 426 51 446-23 379L1 320C104 345 176 381 226 431M267 330C362 252 386 209 432 133L480 168C441 277 366 349 275 406" fill="url(#bark)" stroke="#362b20" stroke-width="8"/><ellipse cx="172" cy="644" rx="22" ry="36" stroke="#493423" stroke-width="8"/><ellipse cx="172" cy="644" rx="8" ry="18" fill="#4e3625"/></g>
+ <g id="leaves" stroke="#273c24" stroke-width="5"><path d="M-80 156C-90 104-27 66 15 90-2 28 67-2 106 29 125-31 204-24 223 18 267-18 331 20 320 62 392 42 423 107 382 141 423 187 371 235 318 215 302 268 229 267 204 233 162 281 101 247 102 217 40 250-6 220 1 188-38 207-83 191-80 156Z" fill="#3c572a"/><path d="M35 107C75 62 112 100 130 77M175 148C215 104 251 142 274 116M62 185L85 177" stroke="#65813a" stroke-width="9" stroke-linecap="round"/></g>
+ <g id="mushroom"><path d="M-7 0L-11 48Q2 57 14 47L8 0" fill="#f2dba8" stroke="#453c27" stroke-width="4"/><path d="M-41 6C-36-39 29-43 43 2 24 17-22 19-41 6Z" fill="#c86b50" stroke="#453c27" stroke-width="4"/><ellipse cx="-17" cy="-8" rx="8" ry="5" fill="#ffe3af"/><ellipse cx="15" cy="-15" rx="7" ry="5" fill="#ffe3af"/></g>
+</defs>
+<path fill="url(#sky)" d="M0 0H1440V1100H0Z"/>
+<ellipse cx="760" cy="400" rx="620" ry="600" fill="url(#light)"/>
+<g opacity=".23" fill="#d8e1a1"><path d="M580 0H640L1000 1100H720Z"/><path d="M750 0H780L1300 1100H1150Z"/></g>
+<g opacity=".35" fill="#40583b"><path d="M400 0H465L487 1050H362Z"/><path d="M1080 0H1140L1182 1050H1047Z"/></g>
+<use href="#tree" transform="translate(-100 0)"/><use href="#tree" transform="translate(1530 0) scale(-1 1)"/>
+<use href="#leaves" transform="translate(5 0) scale(1.4)"/><use href="#leaves" transform="translate(370 -90) scale(1.4)"/><use href="#leaves" transform="translate(820 -100) scale(1.6)"/><use href="#leaves" transform="translate(1320 0) scale(1.2)"/>
+<path d="M0 1020Q180 890 360 1010 565 902 730 1000 1060 883 1440 1015V1100H0Z" fill="#6d853e" stroke="#41572f" stroke-width="6"/>
+<path d="M0 1080Q200 958 380 1070 670 950 930 1068 1210 968 1440 1060V1100H0Z" fill="#9eae52"/>
+<use href="#mushroom" transform="translate(85 1005) rotate(-12)"/><use href="#mushroom" transform="translate(300 1050) scale(.65)"/><use href="#mushroom" transform="translate(1310 1020) rotate(15)"/>
+<g fill="#d7e88e" opacity=".8"><circle cx="370" cy="430" r="3"/><circle cx="1100" cy="600" r="4"/><circle cx="980" cy="280" r="3"/><circle cx="460" cy="850" r="4"/></g>
+</svg>
