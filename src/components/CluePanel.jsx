@@ -1,4 +1,5 @@
 import { useState } from "react";
+import AnswerReveal from "./AnswerReveal";
 
 
 function CluePanel({
@@ -62,6 +63,7 @@ function CluePanel({
           </button>
           {showHint && <p id="selected-hint" className="hint-text">{selectedWord.hint}</p>}
         </section>
+        <AnswerReveal answer={selectedWord.answer} buttonClassName="hint-button" />
         <button
           type="button"
           onClick={checkAnswer}

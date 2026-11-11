@@ -1,4 +1,5 @@
 import { useState } from "react";
+import AnswerReveal from "./AnswerReveal";
 
 
 
@@ -75,6 +76,7 @@ function WordEntry({ word, solvedWords, puzzles, letters, setLetters, checkAnswe
       </div>
       <button className="mobile-hint-button" type="button" aria-expanded={showHint} aria-controls="mobile-hint" onClick={() => setShowHint(!showHint)}>{showHint ? 'Hide hint' : 'Need a hint?'}</button>
       {showHint && <p id="mobile-hint" className="hint-text">{word.hint}</p>}
+      <AnswerReveal answer={word.answer} buttonClassName="mobile-hint-button" />
     </section>
   );
 }

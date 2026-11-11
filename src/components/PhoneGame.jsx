@@ -1,4 +1,5 @@
 import { useState } from "react";
+import AnswerReveal from "./AnswerReveal";
 
 export default function PhoneGame({ puzzles, selectedWord: word, solvedWords, letters, setLetters, onSelectWord, checkAnswer, feedback, onEdit }) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -46,6 +47,7 @@ export default function PhoneGame({ puzzles, selectedWord: word, solvedWords, le
         {['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'].map((row) => <div key={row}>{[...row].map((letter) => <button type="button" key={letter} onClick={() => enterLetter(letter)}>{letter}</button>)}</div>)}
       </div>}
       {showHint && <p className="phone-hint" id="phone-hint">{word.hint}</p>}
+      <AnswerReveal answer={word.answer} buttonClassName="phone-tool" />
       <div className="phone-actions">
         <button type="button" className="phone-tool" aria-expanded={showHint} aria-controls="phone-hint" onClick={() => setShowHint(!showHint)}>Hint</button>
         <button type="button" className="phone-check" onClick={solved ? nextQuestion : checkAnswer}>{solved ? 'Next →' : 'Check'}</button>
