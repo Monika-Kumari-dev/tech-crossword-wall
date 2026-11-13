@@ -11,9 +11,8 @@ function CluePanel({
   feedback,
 }) {
   const [showHint, setShowHint] = useState(false);
-  const renderClues = (direction) => {
-    return puzzles
-      .filter((word) => word.direction === direction)
+  const renderClues = () => {
+    return [...puzzles]
       .sort((a, b) => a.number - b.number)
       .map((word) => {
         const isSelected = selectedWord.id === word.id;
@@ -50,7 +49,7 @@ function CluePanel({
       <h2>GED Clue Bank</h2>
 
       <div className="answer-box">
-        <p className="eyebrow">{selectedWord.number} {selectedWord.direction} · {selectedWord.answer.length} letters · {selectedWord.theme}</p>
+        <p className="eyebrow">{selectedWord.number} · {selectedWord.answer.length} letters · {selectedWord.theme}</p>
         <h3>{selectedWord.clue}</h3>
 
         <p className="answer-instructions">
@@ -79,11 +78,7 @@ function CluePanel({
         )}
       </div>
       <div className="clue-bank" aria-label="All clues" tabIndex={0}>
-      <p className="clue-category">ACROSS</p>
-      {renderClues("across")}
-
-      <p className="clue-category">DOWN</p>
-      {renderClues("down")}
+      {renderClues()}
       </div>
 
     </div>

@@ -65,7 +65,7 @@ function WordEntry({ word, solvedWords, puzzles, letters, setLetters, checkAnswe
         </select>
         <button type="button" aria-label="Next question" onClick={() => onSelectWord(puzzles[(wordIndex + 1) % puzzles.length])}>→</button>
       </div>
-      <p className="eyebrow">{word.number} {word.direction} · {word.answer.length} letters · {word.theme}</p>
+      <p className="eyebrow">{word.number} · {word.answer.length} letters · {word.theme}</p>
       <label htmlFor="mobile-answer">{word.clue}</label>
       <div className="mobile-answer-actions">
         <input id="mobile-answer" type="text" value={solved ? word.answer : answer} onChange={updateAnswer}

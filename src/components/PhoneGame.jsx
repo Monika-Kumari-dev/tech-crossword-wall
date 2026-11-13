@@ -41,7 +41,7 @@ export default function PhoneGame({ puzzles, selectedWord: word, solvedWords, le
       <div className={`phone-answer-tiles ${solved ? 'phone-tiles-correct' : feedback ? 'phone-tiles-wrong' : ''}`}>
         {coordinates.map((key, i) => <button key={key} type="button" className={i === activeIndex ? 'phone-active-tile' : ''} disabled={solved || locked(key)} aria-label={`Letter ${i + 1}: ${letters[key] || 'empty'}`} onClick={() => setActiveIndex(i)}>{letters[key] || ''}</button>)}
       </div>
-      <div className="phone-question"><p>{word.direction} · {word.answer.length} letters · {word.theme}</p><h2>{word.clue}</h2></div>
+      <div className="phone-question"><p>{word.answer.length} letters · {word.theme}</p><h2>{word.clue}</h2></div>
       <div className={`phone-feedback ${solved ? 'phone-correct' : feedback ? 'phone-wrong' : ''}`} role="status">{solved ? '✓ Correct! You earned 10 points.' : feedback || 'Tap a box, then choose a letter.'}</div>
       {!solved && <div className="phone-keyboard" aria-label="Letter keyboard">
         {['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'].map((row) => <div key={row}>{[...row].map((letter) => <button type="button" key={letter} onClick={() => enterLetter(letter)}>{letter}</button>)}</div>)}
