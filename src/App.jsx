@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
 import "./reference.css";
+import "./template.css";
 import usePageRoute, { navigate } from "./hooks/usePageRoute";
 import { recordArrival, updateAttendeeProgress } from "./utils/attendance";
 import WallPreview from "./components/WallPreview";
@@ -249,8 +250,7 @@ function App() {
   return (
     <>
       {page === "/" && <main className="app home-page">
-        <section className="welcome-card">
-
+        <header className="home-heading">
           <p className="eyebrow">GED WEEK FY27 · BANGALORE</p>
 
           <h1>
@@ -261,6 +261,8 @@ function App() {
             A fun, collaborative challenge for curious minds. Solve clues across AI, coding, engineering and Intuit / GED to complete the crossword — on your own or as a team.
           </p>
 
+        </header>
+        <section className="welcome-card">
           {!gameStarted ? <form className="welcome-form" onSubmit={handleStartGame}>
 
           <label htmlFor="teamName">YOUR NAME</label>
@@ -306,9 +308,9 @@ function App() {
             <button type="button" className="organizer-link" onClick={() => navigate("/organizer")}>Organizer Dashboard</button>
             <button type="button" className="organizer-link" onClick={resetGame}>Start a new game</button>
           </div>}
-          <p className="footer-text">TUE, NOV 17, 2026 · GED WEEK NOV 16–20</p>
         </section>
         <WallPreview />
+        <footer className="home-event-footer"><p className="footer-text">TUE, NOV 17, 2026 · GED WEEK NOV 16–20</p></footer>
       </main>}
 
       {page === "/game" && gameStarted && <main className="game-page play-page">
