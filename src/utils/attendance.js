@@ -1,3 +1,5 @@
+import { queueAttendee } from "./attendanceSync";
+let lastQueuedProgress = "";
 const ATTENDANCE_KEY = "ged-fy27-attendees";
 
 export function getAttendees() {
@@ -20,9 +22,10 @@ export function recordArrival(name, email, startGame = false) {
     arrivedAt: existing?.arrivedAt || new Date().toISOString(),
     gamesStarted: (existing?.gamesStarted || 0) + (startGame ? 1 : 0),
     status: startGame ? "In progress" : existing?.status || "Checked in",
-    ...(startGame ? { score: 0, solvedCount: 0, seconds: 0, startedAt: new Date().toISOString(), endedAt: "" } : {}),
+    ...(startGame ? { sessionId: crypto.randomUUID(), score: 0, solvedCount: 0, seconds: 0, startedAt: new Date().toISOString(), endedAt: "" } : {}),
   };
   localStorage.setItem(ATTENDANCE_KEY, JSON.stringify([...attendees.filter((item) => item.email !== key), person]));
+  queueAttendee(person);
   return person;
 }
 
@@ -30,6 +33,12 @@ export function updateAttendeeProgress(email, progress) {
   const key = email.trim().toLowerCase();
   const attendees = getAttendees().map((person) => person.email === key ? { ...person, ...progress } : person);
   localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(attendees));
+  const person = attendees.find((item) => item.email === key);
+  const signature = `${person?.sessionId}/${person?.score}`;
+  if (signature !== lastQueuedProgress) {
+    queueAttendee(person);
+    lastQueuedProgress = signature;
+  }
 }
 
 export function attendanceSummary(attendees) {

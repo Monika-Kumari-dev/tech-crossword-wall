@@ -129,3 +129,29 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
   .home-page .preview-clues { grid-template-columns: 1fr 1fr; }
   .home-page .preview-clues > div { margin-top: 8px; }
 }
+
+/* TV stations scale by available pixels, including Full HD and 4K screens. */
+@media (min-width: 1600px) and (min-height: 900px) {
+  .home-page, .play-page { padding-inline: 4vw; }
+  .play-page > .page-navigation, .play-page > .game-header,
+  .play-page > .game-layout, .play-page > .game-footer { max-width: none; }
+  .play-page .page-navigation { font-size: clamp(16px, 1.7svh, 32px); }
+  .play-page .game-header h1 { font-size: clamp(28px, 3svh, 58px); }
+  .play-page .game-header .eyebrow,
+  .play-page .game-header .team-label,
+  .play-page .stat-card span { font-size: clamp(13px, 1.5svh, 28px); }
+  .play-page .stat-card strong { font-size: clamp(24px, 2.8svh, 54px); }
+  .play-page .clue-panel > h2,
+  .play-page .panel-heading h2 { font-size: clamp(20px, 2.2svh, 42px); }
+  .play-page .clue-card strong,
+  .play-page .clue-card span,
+  .play-page .feedback { font-size: clamp(15px, 1.7svh, 32px); }
+  .play-page .clue-card { padding: 1svh; }
+  .play-page .crossword-grid .grid-cell input { font-size: clamp(12px, 2.7cqw, 32px); }
+  .play-page .crossword-grid .cell-number { font-size: clamp(7px, 1.4cqw, 15px); }
+  .home-page .preview-cell span { font-size: clamp(20px, 2.5svh, 48px); }
+}
+.organizer-login { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 20px; }
+.organizer-login input { min-height: 40px; padding: 8px 12px; border: 1px solid var(--theme-border); border-radius: 8px; background: var(--theme-inset); color: #fff; }
+.organizer-login button { padding: 10px 18px; border: 0; border-radius: 999px; cursor: pointer; }
+.sync-status { position: fixed; bottom: 12px; left: 12px; right: 12px; z-index: 10; width: fit-content; margin: 0; padding: 10px 16px; border-radius: 8px; background: #f0f4f8; color: #0d0031; font-size: 13px; }

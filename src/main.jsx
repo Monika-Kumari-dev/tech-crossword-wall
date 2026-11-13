@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
+import AttendanceSyncStatus from './components/AttendanceSyncStatus.jsx'
 import BrandRibbon from './components/BrandRibbon.jsx'
 
 createRoot(document.getElementById('root')).render(
@@ -11,6 +12,7 @@ createRoot(document.getElementById('root')).render(
       <i className="grid-horizontal" />
     </div>
     <App />
+    <AttendanceSyncStatus />
     <BrandRibbon />
   </StrictMode>,
 )
