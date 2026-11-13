@@ -27,10 +27,6 @@ export default function WallPreview() {
           </div>;
         })}
       </div>
-      <div className="preview-clues">
-        <div><p><b>2</b> Three letters at the heart of this event</p><p><b>3</b> The company behind GED Week</p><p><b>4</b> This GED Week’s fiscal year</p></div>
-        <div><p><b>1</b> GED ___ · November 16–20</p></div>
-      </div>
       <p className="wall-caption">A little curiosity. A lot of connections.</p>
     </aside>
   );

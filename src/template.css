@@ -47,7 +47,7 @@
 .home-page .welcome-card button:hover { background: var(--theme-blue); color: #fff; }
 .home-page .wall-preview {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(160px, .8fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px 24px;
   align-items: start;
   width: 100%;
@@ -107,7 +107,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
   .home-page .home-heading h1 { font-size: clamp(30px, 4.8svh, 88px); }
   .home-page .description { font-size: clamp(14px, 1.8svh, 32px); margin-bottom: 0; }
   .home-page .welcome-card { max-width: none; padding: 2.5svh 2svh; }
-  .home-page .wall-preview { width: 100%; grid-template-columns: minmax(0, 1.1fr) minmax(150px, .9fr); gap: 1svh 20px; }
+  .home-page .wall-preview { width: 100%; grid-template-columns: minmax(0, 1fr); gap: 1svh 20px; }
   .home-page .preview-grid { width: min(100%, 45svh); justify-self: center; }
   .home-page .wall-preview h2 { font-size: 2.8svh; margin: 0; }
   .play-page { padding-bottom: 110px; }
