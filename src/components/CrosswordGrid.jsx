@@ -160,7 +160,7 @@ function CrosswordGrid({
       {feedback && <p className="mobile-feedback feedback" role="status">{feedback}</p>}
       <p className="board-scroll-help" id="board-scroll-help">Choose a question above or tap a word on the board.</p>
       <div className="crossword-scroll" role="region" aria-label="Crossword board" aria-describedby="board-scroll-help" tabIndex={0}>
-    <div className="crossword-grid" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`, maxWidth: `min(100%, 620px, ${75 * cols / rows}svh)` }}>
+    <div className="crossword-grid" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`, gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))`, aspectRatio: `${cols} / ${rows}`, maxWidth: `min(100%, var(--board-width, 620px), calc(var(--board-height, 75svh) * ${cols / rows}))` }}>
       {grid.map((row, rowIndex) =>
         row.map((cell, colIndex) => {
           const key = `${rowIndex}-${colIndex}`;

@@ -78,11 +78,13 @@ function CluePanel({
           </p>
         )}
       </div>
+      <div className="clue-bank" aria-label="All clues" tabIndex={0}>
       <p className="clue-category">ACROSS</p>
       {renderClues("across")}
 
       <p className="clue-category">DOWN</p>
       {renderClues("down")}
+      </div>
 
     </div>
   );

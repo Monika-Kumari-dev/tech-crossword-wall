@@ -17,7 +17,7 @@ function GameHeader({
   return (
     <header className="game-header">
       <div>
-        <p className="eyebrow">GED FY27 · BANGALORE · NOV 18</p>
+        <p className="eyebrow">GED FY27 · BANGALORE · NOV 17</p>
 
         <h1>
           TECH <span>CROSSWORD</span>

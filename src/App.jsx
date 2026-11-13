@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
 import "./reference.css";
+import usePageRoute, { navigate } from "./hooks/usePageRoute";
+import { recordArrival, updateAttendeeProgress } from "./utils/attendance";
 import WallPreview from "./components/WallPreview";
 import PhoneGame from "./components/PhoneGame";
-import { domains, getDomainPuzzles } from "./data/domains";
+import { getDomainPuzzles } from "./data/domains";
 import CrosswordGrid from "./components/CrosswordGrid";
 import CluePanel from "./components/CluePanel";
 import GameHeader from "./components/GameHeader";
@@ -15,31 +17,33 @@ import {
 } from "./utils/scoring";
 
 function App() {
-  const [domain, setDomain] = useState("All domains");
+  const domain = "All domains";
   const puzzles = useMemo(() => getDomainPuzzles(domain), [domain]);
   const [teamName, setTeamName] = useState("");
+  const [email, setEmail] = useState("");
   const [seconds, setSeconds] = useState(0);
   const [score, setScore] = useState(0);
   const [gameStarted, setGameStarted] = useState(false);
-  const [showOrganizer, setShowOrganizer] = useState(false);
+  const page = usePageRoute();
   const [leaderboard, setLeaderboard] = useState(getLeaderboard);
-  const gameSectionRef = useRef(null);
   const savedSessionRef = useRef(false);
   const [selectedWord, setSelectedWord] = useState(puzzles[0]);
   const [solvedWords, setSolvedWords] = useState([]);
   const [letters, setLetters] = useState({});
   const [feedback, setFeedback] = useState("");
-  const finished = solvedWords.length === puzzles.length;
+  const [endedEarly, setEndedEarly] = useState(false);
+  const completed = solvedWords.length === puzzles.length;
+  const finished = completed || endedEarly;
 
   useEffect(() => {
-    if (!gameStarted || finished) return undefined;
+    if (!gameStarted || finished || page !== "/game") return undefined;
 
     const timerId = window.setInterval(() => {
       setSeconds((previous) => previous + 1);
     }, 1000);
 
     return () => window.clearInterval(timerId);
-  }, [gameStarted, finished]);
+  }, [gameStarted, finished, page]);
 
   useEffect(() => {
     if (!finished || savedSessionRef.current) return;
@@ -49,8 +53,11 @@ function App() {
     const result = {
       id: `${Date.now()}-${teamName}`,
       teamName,
+      email,
       domain,
       totalWords: puzzles.length,
+      solvedCount: solvedWords.length,
+      completed,
       score,
       seconds,
       completedAt: new Date().toLocaleString(),
@@ -58,16 +65,38 @@ function App() {
 
     const updatedLeaderboard = saveTeamResult(result);
     setLeaderboard(updatedLeaderboard);
-  }, [finished, teamName, domain, puzzles.length, score, seconds]);
+    navigate("/results");
+  }, [finished, completed, solvedWords.length, teamName, email, domain, puzzles.length, score, seconds]);
 
   useEffect(() => {
-    if (gameStarted && gameSectionRef.current) {
-      gameSectionRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+    if (page === "/game" && finished) {
+      navigate("/results", true);
+      return;
     }
-  }, [gameStarted]);
+    if ((page === "/game" && !gameStarted) || (page === "/results" && !finished)) {
+      navigate("/", true);
+    }
+  }, [page, gameStarted, finished]);
+
+  const navigation = (
+    <nav className="page-navigation" aria-label="Page navigation">
+      <a href="#/">← Home</a>
+      {gameStarted && !finished && page !== "/game" && <a href="#/game">Resume game</a>}
+      {finished && page !== "/results" && <a href="#/results">Results</a>}
+      {page !== "/organizer" && <a href="#/organizer">Organizer Dashboard</a>}
+    </nav>
+  );
+
+  useEffect(() => {
+    if (!gameStarted) return;
+    updateAttendeeProgress(email, {
+      score,
+      solvedCount: solvedWords.length,
+      seconds,
+      status: completed ? "Completed" : endedEarly ? "Ended early" : "In progress",
+      ...(finished ? { endedAt: new Date().toISOString() } : {}),
+    });
+  }, [gameStarted, email, score, solvedWords.length, seconds, completed, endedEarly, finished]);
 
   const selectWord = (word) => {
     setSelectedWord(word);
@@ -75,6 +104,7 @@ function App() {
   };
 
   const checkAnswer = () => {
+    if (finished) return;
     const alreadySolved = solvedWords.includes(selectedWord.id);
 
     if (alreadySolved) {
@@ -115,18 +145,33 @@ function App() {
       setFeedback("Not quite! Check the letters and try again.");
     }
   };
-  const handleStartGame = () => {
-    setTeamName(teamName.trim() || "Tech Explorer");
+  const handleStartGame = (event) => {
+    event.preventDefault();
+    if (!teamName.trim()) {
+      event.currentTarget.elements.teamName.setCustomValidity("Please enter your name.");
+      event.currentTarget.reportValidity();
+      return;
+    }
+    setTeamName(teamName.trim());
+    setEmail(email.trim());
     setFeedback("");
     setSelectedWord(puzzles[0]);
 
+    recordArrival(teamName, email, true);
     setGameStarted(true);
+    navigate("/game");
   };
 
   const resetGame = () => {
+    if (gameStarted && !finished) {
+      updateAttendeeProgress(email, { status: "Ended early", endedAt: new Date().toISOString() });
+    }
     savedSessionRef.current = false;
     setGameStarted(false);
+    setEndedEarly(false);
+    navigate("/");
     setTeamName("");
+    setEmail("");
     setSelectedWord(puzzles[0]);
     setLetters({});
     setSolvedWords([]);
@@ -137,30 +182,30 @@ function App() {
 
   const domainLeaderboard = leaderboard.filter((team) => (team.domain || "All domains") === domain);
 
-  if (showOrganizer) {
+  if (page === "/organizer") {
     return (
       <main className="game-page">
+        {navigation}
         <OrganizerPanel
-          leaderboard={leaderboard}
-          onLeaderboardChange={setLeaderboard}
-          onBackToWelcome={() => setShowOrganizer(false)}
+          onBackToWelcome={() => navigate("/")}
         />
       </main>
     );
   }
 
-  if (finished) {
+  if (page === "/results" && finished) {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
 
     return (
       <main className="app">
         <section className="welcome-card results-card">
-          <p className="eyebrow">PUZZLE COMPLETE</p>
+          {navigation}
+          <p className="eyebrow">{completed ? "PUZZLE COMPLETE" : "YOUR RESULTS"}</p>
           <h1>
             WELL <span>DONE!</span>
           </h1>
-          <p className="description">Team {teamName} completed {domain === "All domains" ? "all domains" : domain} — {puzzles.length} clues.</p>
+          <p className="description">{teamName} solved {solvedWords.length} of {puzzles.length} clues.</p>
           <div className="result-stats">
             <div>
               <strong>{score}</strong>
@@ -203,7 +248,7 @@ function App() {
 
   return (
     <>
-      {!gameStarted && <main className="app home-page">
+      {page === "/" && <main className="app home-page">
         <section className="welcome-card">
 
           <p className="eyebrow">GED WEEK FY27 · BANGALORE</p>
@@ -216,45 +261,58 @@ function App() {
             A fun, collaborative challenge for curious minds. Solve clues across AI, coding, engineering and Intuit / GED to complete the crossword — on your own or as a team.
           </p>
 
-          <div className="theme-tags">{domains.filter((name) => name !== "All domains").map((name) => <span key={name}>{name}</span>)}</div>
-          <div className="welcome-form">
-          <label htmlFor="domain">CHOOSE YOUR DOMAIN</label>
-          <select id="domain" value={domain} onChange={(event) => setDomain(event.target.value)}>
-            {domains.map((option) => <option key={option} value={option}>{option}</option>)}
-          </select>
-          <p className="domain-summary">{puzzles.length} questions · {puzzles.length * 10} possible points</p>
+          {!gameStarted ? <form className="welcome-form" onSubmit={handleStartGame}>
 
-          <label htmlFor="teamName">YOUR NAME OR TEAM (OPTIONAL)</label>
+          <label htmlFor="teamName">YOUR NAME</label>
 
           <input
             id="teamName"
+            name="teamName"
+            autoComplete="name"
+            required
             type="text"
-            placeholder="e.g. Tech Explorer"
-            onKeyDown={(event) => { if (event.key === "Enter") handleStartGame(); }}
+            placeholder="Enter your name"
             value={teamName}
-            onChange={(event) => setTeamName(event.target.value)}
+            onChange={(event) => { event.target.setCustomValidity(""); setTeamName(event.target.value); }}
           />
 
-          <button onClick={handleStartGame}>
+          <label className="email-label" htmlFor="email">EMAIL ADDRESS</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
+            placeholder="you@company.com"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+          />
+
+          <button type="submit">
             Start solving <span>→</span>
           </button>
 
           <button
             type="button"
             className="organizer-link"
-            onClick={() => setShowOrganizer(true)}
+            onClick={() => navigate("/organizer")}
           >
             Organizer Dashboard
           </button>
 
-          </div>
-          <p className="footer-text">WED, NOV 18, 2026 · GED WEEK NOV 16–20</p>
-          <p className="source-note">Clues from GED Activation Content Ideas · Intuit Confidential and Proprietary</p>
+          </form> : <div className="welcome-form">
+            <p>{finished ? "Crossword complete" : "Game in progress"} · {teamName}</p>
+            <button type="button" onClick={() => navigate(finished ? "/results" : "/game")}>{finished ? "View results" : "Resume game"} →</button>
+            <button type="button" className="organizer-link" onClick={() => navigate("/organizer")}>Organizer Dashboard</button>
+            <button type="button" className="organizer-link" onClick={resetGame}>Start a new game</button>
+          </div>}
+          <p className="footer-text">TUE, NOV 17, 2026 · GED WEEK NOV 16–20</p>
         </section>
         <WallPreview />
       </main>}
 
-      {gameStarted && <main className="game-page" ref={gameSectionRef}>
+      {page === "/game" && gameStarted && <main className="game-page play-page">
+        {navigation}
         <GameHeader
           teamName={teamName}
           domain={domain}
@@ -293,7 +351,7 @@ function App() {
             feedback={feedback}
           />
         </section>
-        <footer className="game-footer"><span>GED Bangalore · Nov 18, 2026 · Hints are free. Each word earns 10 points.</span><button type="button" className="reset-button" onClick={resetGame}>Start over</button></footer>
+        <footer className="game-footer"><span>GED Bangalore · Nov 17, 2026 · Hints are free. Each word earns 10 points.</span><div className="game-footer-actions"><button type="button" className="finish-button" onClick={() => setEndedEarly(true)}>Finish &amp; view score</button><button type="button" className="reset-button" onClick={resetGame}>Start over</button></div></footer>
       </main>}
     </>
   );

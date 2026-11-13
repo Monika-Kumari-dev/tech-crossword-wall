@@ -1,9 +1,8 @@
 const words = [
-  { answer: 'PROMPT', row: 1, col: 3, direction: 'down', number: 1 },
-  { answer: 'REPO', row: 2, col: 3, direction: 'across', number: 2 },
-  { answer: 'COMMIT', row: 4, col: 0, direction: 'across', number: 3 },
-  { answer: 'MCP', row: 4, col: 2, direction: 'down', number: 4 },
-  { answer: 'UPTIME', row: 6, col: 1, direction: 'across', number: 5 },
+  { answer: 'WEEK', row: 1, col: 3, direction: 'down', number: 1 },
+  { answer: 'GED', row: 3, col: 2, direction: 'across', number: 2 },
+  { answer: 'INTUIT', row: 5, col: 1, direction: 'across', number: 3 },
+  { answer: 'FY27', row: 7, col: 2, direction: 'across', number: 4 },
 ];
 
 export default function WallPreview() {
@@ -16,7 +15,7 @@ export default function WallPreview() {
   }));
   return (
     <aside className="wall-preview" aria-label="Preview of the tech crossword wall">
-      <div className="wall-topline"><span>GED WEEK FY27</span><span>01 / 24</span></div>
+      <div className="wall-topline"><span>GED WEEK FY27</span><span>FY27</span></div>
       <h2>Tech<br /><span>Crossword Wall</span></h2>
       <div className="preview-grid" aria-hidden="true">
         {Array.from({ length: 64 }, (_, index) => {
@@ -24,13 +23,13 @@ export default function WallPreview() {
           const cell = cells.get(`${row}-${index % 8}`);
           return <div key={index} className={cell ? 'preview-cell' : 'preview-empty'}>
             {cell?.number && <small>{cell.number}</small>}
-            {cell && (row === 4 || index % 8 === 3) && <span>{cell.letter}</span>}
+            {cell && <span>{cell.letter}</span>}
           </div>;
         })}
       </div>
       <div className="preview-clues">
-        <div><h3>Across</h3><p><b>2</b> Where your code lives</p><p><b>3</b> A saved snapshot of your changes</p><p><b>5</b> Percent of time a system stays up</p></div>
-        <div><h3>Down</h3><p><b>1</b> A single request typed to a model</p><p><b>4</b> The protocol that lets Claude plug into your tools</p></div>
+        <div><h3>Across</h3><p><b>2</b> Three letters at the heart of this event</p><p><b>3</b> The company behind GED Week</p><p><b>4</b> This GED Week’s fiscal year</p></div>
+        <div><h3>Down</h3><p><b>1</b> GED ___ · November 16–20</p></div>
       </div>
       <p className="wall-caption">A little curiosity. A lot of connections.</p>
     </aside>
