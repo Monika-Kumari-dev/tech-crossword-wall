@@ -35,9 +35,9 @@ export async function flushAttendance() {
     announce('Score saved on this device. Waiting to sync — keep this page open.');
   } finally { running = false; }
 }
-export async function fetchSharedAttendees(pin, signal) {
+export async function fetchSharedAttendees(signal) {
   await flushAttendance();
-  const response = await fetch(endpoint, { headers: { 'X-Organizer-Pin': pin }, cache: 'no-store', signal });
+  const response = await fetch(endpoint, { cache: 'no-store', signal });
   let result;
   try { result = await response.json(); } catch { throw new Error('Shared storage needs a Netlify deployment.'); }
   if (!response.ok) throw new Error(result.error || 'Unable to load shared attendees.');

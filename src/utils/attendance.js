@@ -1,4 +1,4 @@
-import { queueAttendee } from "./attendanceSync";
+import { queueAttendee } from "./attendanceSync.js";
 let lastQueuedProgress = "";
 const ATTENDANCE_KEY = "ged-fy27-attendees";
 

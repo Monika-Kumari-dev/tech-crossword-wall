@@ -1,7 +1,5 @@
-import { timingSafeEqual } from 'node:crypto';
-
 const json = (value, status = 200) => Response.json(value, { status, headers: { 'Cache-Control': 'no-store' } });
-export function createAttendanceHandler(getStore, getPin) {
+export function createAttendanceHandler(getStore) {
   return async (request) => {
     try {
       if (request.method === 'POST') {
@@ -9,6 +7,7 @@ export function createAttendanceHandler(getStore, getPin) {
         if (text.length > 2048) return json({ error: 'Record too large.' }, 413);
         let value;
         try { value = JSON.parse(text); } catch { return json({ error: 'Invalid record.' }, 400); }
+        if (!value || typeof value !== 'object' || Array.isArray(value)) return json({ error: 'Invalid record.' }, 400);
         const { sessionId, startedAt, name, email, score } = value;
         if (typeof sessionId !== 'string' || !/^[a-f0-9-]{36}$/i.test(sessionId) ||
             typeof name !== 'string' || !name.trim() || name.length > 150 ||
@@ -23,11 +22,6 @@ export function createAttendanceHandler(getStore, getPin) {
         return json({ saved: true });
       }
       if (request.method !== 'GET') return json({ error: 'Method not allowed.' }, 405);
-      const pin = getPin();
-      if (!pin) return json({ error: 'Set ORGANIZER_PIN in Netlify environment variables, then redeploy.' }, 503);
-      const supplied = request.headers.get('X-Organizer-Pin') || '';
-      const a = Buffer.from(pin), b = Buffer.from(supplied);
-      if (a.length !== b.length || !timingSafeEqual(a, b)) return json({ error: 'Incorrect organizer PIN.' }, 401);
       const store = getStore();
       const { blobs } = await store.list({ prefix: 'sessions/' });
       const people = new Map();

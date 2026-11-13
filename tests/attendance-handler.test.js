@@ -5,11 +5,11 @@ import { createAttendanceHandler } from '../server/attendance-handler.js';
 function setup() {
   const data = new Map();
   const store = { setJSON: async (key, value) => data.set(key, value), list: async () => ({ blobs: [...data.keys()].map((key) => ({ key })) }), get: async (key) => data.get(key) };
-  return createAttendanceHandler(() => store, () => 'test-pin');
+  return createAttendanceHandler(() => store);
 }
 const player = (id, email, score = 0, startedAt = '2026-11-17T04:00:00Z') => ({ sessionId: `${id}0000000-0000-4000-8000-000000000000`, startedAt, name: 'Player', email, score });
 const post = (handler, value) => handler(new Request('https://example.test/api', { method: 'POST', body: JSON.stringify(value) }));
-const get = (handler, pin = 'test-pin') => handler(new Request('https://example.test/api', { headers: { 'X-Organizer-Pin': pin } }));
+const get = (handler) => handler(new Request('https://example.test/api'));
 
 test('three devices save concurrently without losing players', async () => {
   const handler = setup();
@@ -27,13 +27,10 @@ test('late retries cannot lower the current score; latest game replaces old scor
   await post(handler, player('2', 'one@example.com', 10, '2026-11-17T05:00:00Z'));
   assert.equal((await (await get(handler)).json()).attendees[0].score, 10);
 });
-test('attendee details require the organizer PIN', async () => {
-  assert.equal((await get(setup(), '')).status, 401);
-  assert.equal((await get(setup(), 'wrong')).status, 401);
-});
-test('missing server configuration is clearly reported', async () => {
-  const handler = createAttendanceHandler(() => { throw new Error('must not read'); }, () => undefined);
-  assert.equal((await get(handler)).status, 503);
+test('shared attendees are accessible without a password', async () => {
+  const response = await get(setup());
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), { attendees: [] });
 });
 test('rejects malformed data, invalid scores and unsupported methods', async () => {
   const handler = setup();
@@ -42,6 +39,11 @@ test('rejects malformed data, invalid scores and unsupported methods', async () 
   assert.equal((await handler(new Request('https://example.test/api', { method: 'DELETE' }))).status, 405);
 });
 test('reports storage failures instead of acknowledging an unsaved score', async () => {
-  const handler = createAttendanceHandler(() => { throw new Error('offline'); }, () => 'test-pin');
+  const handler = createAttendanceHandler(() => { throw new Error('offline'); });
   assert.equal((await post(handler, player('1', 'one@example.com'))).status, 503);
+});
+
+test('null and non-object JSON are validation errors, not storage failures', async () => {
+  const handler = setup();
+  for (const value of [null, [], true, "text", 42]) assert.equal((await post(handler, value)).status, 400);
 });

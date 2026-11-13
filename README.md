@@ -30,14 +30,14 @@ Deploy this repository through Netlify's Git integration. `netlify.toml` builds 
 Vite site and deploys the attendance Function. Uploading only `dist` does not deploy
 the server function.
 
-1. In Netlify project configuration, add a secret environment variable named
-   `ORGANIZER_PIN`, available to Functions. Choose a private PIN/password and do not
-   use a `VITE_` prefix (that would expose it in the browser bundle).
-2. Redeploy the project after setting the variable.
-3. Open the same production site URL on all three devices and start separate games.
-4. Open Organizer Dashboard on any device, enter the PIN, and load shared scores.
-   The list refreshes every 10 seconds. Export for Excel downloads one combined CSV
-   with exactly Name, Email ID, and Score.
+1. Deploy the repository to Netlify, including its Function.
+2. Open the same production site URL on all three devices and start separate games.
+3. Open Organizer Dashboard on any device. Shared scores load automatically and
+   refresh every 10 seconds. Export for Excel downloads one combined CSV with
+   exactly Name, Email ID, and Score.
+
+No password or environment variable is required. Anyone with the site URL can view
+and export the shared attendee list.
 
 Scores are stored in site-wide Netlify Blobs, separately from the deploy itself.
 Preview deploys use a separate store. Each email appears once, showing the latest
