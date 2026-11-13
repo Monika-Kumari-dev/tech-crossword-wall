@@ -257,15 +257,13 @@ function App() {
             Tech crossword wall
           </h1>
 
-          <p className="description">
-            A fun, collaborative challenge for curious minds. Solve clues across AI, coding, engineering and Intuit / GED to complete the crossword — on your own or as a team.
-          </p>
+
 
         </header>
         <section className="welcome-card">
           {!gameStarted ? <form className="welcome-form" onSubmit={handleStartGame}>
 
-          <label htmlFor="teamName">YOUR NAME</label>
+          <label htmlFor="teamName">Enter your name</label>
 
           <input
             id="teamName"
@@ -278,14 +276,14 @@ function App() {
             onChange={(event) => { event.target.setCustomValidity(""); setTeamName(event.target.value); }}
           />
 
-          <label className="email-label" htmlFor="email">EMAIL ADDRESS</label>
+          <label className="email-label" htmlFor="email">enter your intuit email id</label>
           <input
             id="email"
             name="email"
             type="email"
             autoComplete="email"
             required
-            placeholder="you@company.com"
+            placeholder="enter your intuit email id"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
           />
@@ -310,7 +308,13 @@ function App() {
           </div>}
         </section>
         <WallPreview />
-        <footer className="home-event-footer"><p className="footer-text">TUE, NOV 17, 2026 · GED WEEK NOV 16–20</p></footer>
+        <aside className="home-introduction">
+          <p className="description">
+            A fun, collaborative challenge for curious minds. Solve clues across AI, coding, engineering and Intuit / GED to complete the crossword — on your own or as a team.
+          </p>
+          <p className="wall-caption">A little curiosity. A lot of connections.</p>
+        </aside>
+        <footer className="home-event-footer"><img className="reference-track" src="/ged-reference-track.svg" alt="" /><p className="footer-text">TUE, NOV 17, 2026 · GED WEEK NOV 16–20</p><img className="event-logo" src="/ged-logo.png" alt="GED" width="37" height="54" /></footer>
       </main>}
 
       {page === "/game" && gameStarted && <main className="game-page play-page">
