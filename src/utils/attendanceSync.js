@@ -11,9 +11,9 @@ function announce(message) {
 export function queueAttendee(person) {
   if (!person?.sessionId) return;
   const records = queue();
-  const key = `${person.sessionId}/${person.score || 0}`;
+  const key = `${person.sessionId}/${person.score || 0}/${person.questionsPlayed ?? (person.score || 0) / 10}`;
   if (records[key]) return;
-  records[key] = { sessionId: person.sessionId, startedAt: person.startedAt, name: person.name, email: person.email, score: person.score || 0 };
+  records[key] = { sessionId: person.sessionId, startedAt: person.startedAt, name: person.name, email: person.email, score: person.score || 0, questionsPlayed: person.questionsPlayed ?? (person.score || 0) / 10 };
   localStorage.setItem(QUEUE_KEY, JSON.stringify(records));
   void flushAttendance();
 }

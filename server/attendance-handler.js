@@ -16,9 +16,14 @@ export function createAttendanceHandler(getStore) {
             typeof startedAt !== 'string' || !Number.isFinite(Date.parse(startedAt))) {
           return json({ error: 'Invalid player details or score.' }, 400);
         }
+        // Older clients recorded only successful questions.
+        const questionsPlayed = value.questionsPlayed ?? score / 10;
+        if (!Number.isInteger(questionsPlayed) || questionsPlayed < score / 10 || questionsPlayed > 24) {
+          return json({ error: 'Invalid questions played count.' }, 400);
+        }
         // Each score snapshot has its own key: simultaneous devices cannot overwrite each other.
-        const record = { sessionId, startedAt, name: name.trim(), email: email.trim().toLowerCase(), score };
-        await getStore().setJSON(`sessions/${sessionId}/${score}`, record);
+        const record = { sessionId, startedAt, name: name.trim(), email: email.trim().toLowerCase(), score, questionsPlayed };
+        await getStore().setJSON(`sessions/${sessionId}/${score}/${questionsPlayed}`, record);
         return json({ saved: true });
       }
       if (request.method !== 'GET') return json({ error: 'Method not allowed.' }, 405);
@@ -29,12 +34,14 @@ export function createAttendanceHandler(getStore) {
         const records = await Promise.all(blobs.slice(offset, offset + 25).map(({ key }) => store.get(key, { type: 'json' })));
         for (const record of records) {
           if (!record) continue;
-          const previous = people.get(record.email);
-          if (!previous || Date.parse(record.startedAt) > Date.parse(previous.startedAt) ||
-              (record.sessionId === previous.sessionId && record.score > previous.score)) people.set(record.email, record);
+          const previous = people.get(record.sessionId);
+          if (!previous || record.score > previous.score ||
+              (record.score === previous.score && (record.questionsPlayed ?? record.score / 10) > (previous.questionsPlayed ?? previous.score / 10))) {
+            people.set(record.sessionId, record);
+          }
         }
       }
-      return json({ attendees: [...people.values()].sort((a, b) => a.name.localeCompare(b.name)).map(({ name, email, score }) => ({ name, email, score })) });
+      return json({ attendees: [...people.values()].sort((a, b) => a.name.localeCompare(b.name)).map(({ sessionId, startedAt, name, email, score, questionsPlayed }) => ({ name, email, score, questionsPlayed: questionsPlayed ?? score / 10, sessionId, startedAt })) });
     } catch {
       return json({ error: 'Shared storage is unavailable. Please retry.' }, 503);
     }

@@ -33,3 +33,17 @@ test('offline saves persist, retry succeeds, and simultaneous queued players are
   const rows = await fetchSharedAttendees();
   assert.equal(rows.length, 3);
 });
+
+test('queues progress when a wrong answer increases the question count only', async () => {
+  const data = new Map();
+  globalThis.localStorage = { getItem: (key) => data.get(key) ?? null, setItem: (key, value) => data.set(key, value) };
+  globalThis.window = { dispatchEvent: () => {} };
+  globalThis.fetch = async () => { throw new Error('Offline'); };
+  const person = { sessionId: 'same-game', name: 'Player', email: 'player@example.com', score: 0, questionsPlayed: 0 };
+  queueAttendee(person);
+  await new Promise(setImmediate);
+  queueAttendee({ ...person, questionsPlayed: 1 });
+  await new Promise(setImmediate);
+  const pending = Object.values(JSON.parse(data.get('ged-fy27-sync-queue')));
+  assert.deepEqual(pending.map((record) => record.questionsPlayed), [0, 1]);
+});

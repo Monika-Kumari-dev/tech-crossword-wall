@@ -22,7 +22,7 @@ export function recordArrival(name, email, startGame = false) {
     arrivedAt: existing?.arrivedAt || new Date().toISOString(),
     gamesStarted: (existing?.gamesStarted || 0) + (startGame ? 1 : 0),
     status: startGame ? "In progress" : existing?.status || "Checked in",
-    ...(startGame ? { sessionId: crypto.randomUUID(), score: 0, solvedCount: 0, seconds: 0, startedAt: new Date().toISOString(), endedAt: "" } : {}),
+    ...(startGame ? { sessionId: crypto.randomUUID(), score: 0, questionsPlayed: 0, solvedCount: 0, seconds: 0, startedAt: new Date().toISOString(), endedAt: "" } : {}),
   };
   localStorage.setItem(ATTENDANCE_KEY, JSON.stringify([...attendees.filter((item) => item.email !== key), person]));
   queueAttendee(person);
@@ -34,7 +34,7 @@ export function updateAttendeeProgress(email, progress) {
   const attendees = getAttendees().map((person) => person.email === key ? { ...person, ...progress } : person);
   localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(attendees));
   const person = attendees.find((item) => item.email === key);
-  const signature = `${person?.sessionId}/${person?.score}`;
+  const signature = `${person?.sessionId}/${person?.score}/${person?.questionsPlayed}`;
   if (signature !== lastQueuedProgress) {
     queueAttendee(person);
     lastQueuedProgress = signature;
@@ -59,8 +59,8 @@ export function csvCell(value) {
 
 export function exportAttendance(attendees) {
   const rows = [
-    ["Name", "Email ID", "Score"],
-    ...attendees.map((person) => [person.name, person.email, person.score ?? 0]),
+    ["Name", "Email ID", "Score", "Questions Played", "Session ID", "Started At"],
+    ...attendees.map((person) => [person.name, person.email, person.score ?? 0, person.questionsPlayed ?? (person.score ?? 0) / 10, person.sessionId, person.startedAt]),
   ];
   const blob = new Blob(["\uFEFF" + rows.map((row) => row.map(csvCell).join(",")).join("\r\n")], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);

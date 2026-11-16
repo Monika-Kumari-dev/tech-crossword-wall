@@ -136,18 +136,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
 }
 .sync-status { position: fixed; bottom: 12px; left: 12px; right: 12px; z-index: 10; width: fit-content; margin: 0; padding: 10px 16px; border-radius: 8px; background: #f0f4f8; color: #0d0031; font-size: 13px; }
 
-/* Keep branding contained within the layout, with no decorative track overlays. */
+/* Caption styling shared across screen sizes. */
 .home-page .wall-caption { text-align: center; font-size: clamp(12px, 1.4svh, 24px); }
 .home-page .preview-grid { justify-self: center; }
-@media (min-width: 901px) and (min-height: 600px) {
-  .home-page .event-logo {
-    width: clamp(60px, 6svh, 112px);
-    position: absolute;
-    right: 0;
-    bottom: clamp(24px, 5svh, 96px);
-    top: auto;
-  }
-}
 
 /* Reference layout: heading, entry card / board / supporting copy, then artwork. */
 @font-face {
@@ -276,15 +267,73 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
 }
 @media (min-width: 1101px) and (min-height: 600px) {
   .home-page { --tv-page-gutter: 3vw; }
-  .home-event-footer .reference-track {
-    width: 100vw;
-    max-width: none;
-    max-height: none;
-    height: auto;
-    margin-inline: calc(-1 * var(--tv-page-gutter));
-    aspect-ratio: 1920 / 340;
-    object-fit: contain;
-  }
-  .home-event-footer { gap: 6px 24px; }
   .home-page .preview-grid { width: min(100%, 38svh); }
+}
+
+/* Full-width tracks share one coordinate system with the GED lockup. */
+.home-page { --home-gutter: max(4vw, 20px); }
+.home-page .welcome-form { width: 100%; max-width: none; }
+.home-page .welcome-card input {
+  display: block;
+  width: 100%;
+  margin: 0;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.home-event-footer {
+  width: calc(100% + 2 * var(--home-gutter));
+  margin-inline: calc(-1 * var(--home-gutter));
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+.home-event-footer .reference-track {
+  display: block;
+  width: 100%;
+  height: clamp(140px, 18svh, 240px);
+  max-height: none;
+  object-fit: fill;
+  grid-area: 1 / 1;
+}
+.home-event-footer .footer-text {
+  padding-inline: var(--home-gutter);
+  margin: 0;
+  grid-row: 2;
+}
+/* Anchor both assets to the top of the same fixed artwork box. Grid row
+   centering must not shift the track independently of the logo. */
+.home-brand-artwork {
+  --track-height: clamp(140px, 18svh, 240px);
+  --logo-width: clamp(48px, 4vw, 96px);
+  position: relative;
+  height: max(var(--track-height), calc(var(--track-height) * .76 + var(--logo-width) * 54 / 37));
+}
+.home-brand-artwork .reference-track {
+  position: absolute;
+  inset: 0 0 auto;
+  height: var(--track-height);
+  margin: 0;
+}
+.home-brand-artwork .event-logo {
+  position: absolute;
+  top: calc(var(--track-height) * .76);
+  right: max(18px, 2vw);
+  bottom: auto;
+  width: var(--logo-width);
+  height: auto;
+  margin: 0;
+}
+@media (min-width: 901px) and (min-height: 600px) {
+  .home-page { --home-gutter: 5vw; }
+}
+@media (min-width: 1101px) and (min-height: 600px) {
+  .home-page { --home-gutter: 3vw; }
+}
+@media (max-width: 900px) {
+  .home-page { --home-gutter: 20px; }
+}
+
+.home-event-footer .reference-track img {
+  display: block;
+  width: 100%;
+  height: 100%;
 }

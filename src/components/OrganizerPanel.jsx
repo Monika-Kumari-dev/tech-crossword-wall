@@ -53,12 +53,12 @@ function OrganizerPanel({ onBackToWelcome }) {
       </div>
       <div className="attendee-table-wrapper">
         <table className="attendee-table">
-          <thead><tr><th scope="col">Name</th><th scope="col">Email ID</th><th scope="col">Score</th></tr></thead>
+          <thead><tr><th scope="col">Name</th><th scope="col">Email ID</th><th scope="col">Score</th><th scope="col">Questions Played</th><th scope="col">Session Started</th></tr></thead>
           <tbody>
             {attendees.map((person) => (
-              <tr key={person.email}><td>{person.name}</td><td>{person.email}</td><td>{person.score ?? 0}</td></tr>
+              <tr key={person.sessionId}><td>{person.name}</td><td>{person.email}</td><td>{person.score ?? 0}</td><td>{person.questionsPlayed ?? (person.score ?? 0) / 10}</td><td>{person.startedAt ? new Date(person.startedAt).toLocaleString() : "—"}</td></tr>
             ))}
-            {attendees.length === 0 && <tr><td colSpan={3}>No players yet.</td></tr>}
+            {attendees.length === 0 && <tr><td colSpan={5}>No players yet.</td></tr>}
           </tbody>
         </table>
       </div>

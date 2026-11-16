@@ -30,6 +30,7 @@ function App() {
   const savedSessionRef = useRef(false);
   const [selectedWord, setSelectedWord] = useState(puzzles[0]);
   const [solvedWords, setSolvedWords] = useState([]);
+  const [attemptedWords, setAttemptedWords] = useState([]);
   const [letters, setLetters] = useState({});
   const [feedback, setFeedback] = useState("");
   const [endedEarly, setEndedEarly] = useState(false);
@@ -58,6 +59,7 @@ function App() {
       domain,
       totalWords: puzzles.length,
       solvedCount: solvedWords.length,
+      questionsPlayed: attemptedWords.length,
       completed,
       score,
       seconds,
@@ -67,7 +69,7 @@ function App() {
     const updatedLeaderboard = saveTeamResult(result);
     setLeaderboard(updatedLeaderboard);
     navigate("/results");
-  }, [finished, completed, solvedWords.length, teamName, email, domain, puzzles.length, score, seconds]);
+  }, [finished, completed, solvedWords.length, attemptedWords.length, teamName, email, domain, puzzles.length, score, seconds]);
 
   useEffect(() => {
     if (page === "/game" && finished) {
@@ -93,11 +95,12 @@ function App() {
     updateAttendeeProgress(email, {
       score,
       solvedCount: solvedWords.length,
+      questionsPlayed: attemptedWords.length,
       seconds,
       status: completed ? "Completed" : endedEarly ? "Ended early" : "In progress",
       ...(finished ? { endedAt: new Date().toISOString() } : {}),
     });
-  }, [gameStarted, email, score, solvedWords.length, seconds, completed, endedEarly, finished]);
+  }, [gameStarted, email, score, solvedWords.length, attemptedWords.length, seconds, completed, endedEarly, finished]);
 
   const selectWord = (word) => {
     setSelectedWord(word);
@@ -134,6 +137,8 @@ function App() {
       setFeedback("Fill in the crossword boxes first.");
       return;
     }
+
+    setAttemptedWords((previous) => previous.includes(selectedWord.id) ? previous : [...previous, selectedWord.id]);
 
     if (enteredAnswer === selectedWord.answer) {
       setSolvedWords((previous) => [...previous, selectedWord.id]);
@@ -176,6 +181,7 @@ function App() {
     setSelectedWord(puzzles[0]);
     setLetters({});
     setSolvedWords([]);
+    setAttemptedWords([]);
     setScore(0);
     setSeconds(0);
     setFeedback("");
@@ -276,14 +282,14 @@ function App() {
             onChange={(event) => { event.target.setCustomValidity(""); setTeamName(event.target.value); }}
           />
 
-          <label className="email-label" htmlFor="email">enter your intuit email id</label>
+          <label className="email-label" htmlFor="email">Enter your Intuit email id</label>
           <input
             id="email"
             name="email"
             type="email"
             autoComplete="email"
             required
-            placeholder="enter your intuit email id"
+            placeholder="Enter your Intuit email id"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
           />
@@ -314,7 +320,7 @@ function App() {
           </p>
           <p className="wall-caption">A little curiosity. A lot of connections.</p>
         </aside>
-        <footer className="home-event-footer"><img className="reference-track" src="/ged-reference-track.svg" alt="" /><p className="footer-text">TUE, NOV 17, 2026 · GED WEEK NOV 16–20</p><img className="event-logo" src="/ged-logo.png" alt="GED" width="37" height="54" /></footer>
+        <footer className="home-event-footer"><div className="home-brand-artwork"><picture className="reference-track"><source media="(max-width: 600px)" srcSet="/ged-reference-track-mobile.svg" /><img src="/ged-reference-track.svg" alt="" /></picture><img className="event-logo" src="/ged-logo.png" alt="GED" width="37" height="54" /></div><p className="footer-text">TUE, NOV 17, 2026 · GED WEEK NOV 16–20</p></footer>
       </main>}
 
       {page === "/game" && gameStarted && <main className="game-page play-page">

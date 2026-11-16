@@ -17,15 +17,17 @@ test('three devices save concurrently without losing players', async () => {
   assert.ok(results.every((response) => response.status === 200));
   const { attendees } = await (await get(handler)).json();
   assert.equal(attendees.length, 3);
-  assert.deepEqual(Object.keys(attendees[0]), ['name', 'email', 'score']);
+  assert.deepEqual(Object.keys(attendees[0]), ['name', 'email', 'score', 'questionsPlayed', 'sessionId', 'startedAt']);
 });
-test('late retries cannot lower the current score; latest game replaces old score', async () => {
+test('late retries cannot lower scores and repeat games remain separate', async () => {
   const handler = setup();
   await post(handler, player('1', 'one@example.com', 50));
   await post(handler, player('1', 'one@example.com', 0));
   assert.equal((await (await get(handler)).json()).attendees[0].score, 50);
   await post(handler, player('2', 'one@example.com', 10, '2026-11-17T05:00:00Z'));
-  assert.equal((await (await get(handler)).json()).attendees[0].score, 10);
+  const { attendees } = await (await get(handler)).json();
+  assert.equal(attendees.length, 2);
+  assert.deepEqual(attendees.map((person) => person.score).sort((a, b) => a - b), [10, 50]);
 });
 test('shared attendees are accessible without a password', async () => {
   const response = await get(setup());
@@ -46,4 +48,24 @@ test('reports storage failures instead of acknowledging an unsaved score', async
 test('null and non-object JSON are validation errors, not storage failures', async () => {
   const handler = setup();
   for (const value of [null, [], true, "text", 42]) assert.equal((await post(handler, value)).status, 400);
+});
+
+test('incorrect questions sync without a score change and retries cannot lower counts', async () => {
+  const handler = setup();
+  const value = player('1', 'one@example.com', 10);
+  await post(handler, { ...value, questionsPlayed: 3 });
+  await post(handler, { ...value, questionsPlayed: 1 });
+  const { attendees } = await (await get(handler)).json();
+  assert.equal(attendees[0].questionsPlayed, 3);
+  assert.equal(attendees[0].score, 10);
+});
+
+test('validates question counts and supports records from older clients', async () => {
+  const handler = setup();
+  const value = player('1', 'one@example.com', 20);
+  for (const questionsPlayed of [-1, 1, 25, 2.5, '3']) {
+    assert.equal((await post(handler, { ...value, questionsPlayed })).status, 400);
+  }
+  await post(handler, value);
+  assert.equal((await (await get(handler)).json()).attendees[0].questionsPlayed, 2);
 });
