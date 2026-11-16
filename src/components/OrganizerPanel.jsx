@@ -105,9 +105,11 @@ export default function OrganizerPanel({ onBackToWelcome }) {
   };
   if (checking) return <section className="organizer-panel"><p role="status">Checking admin access…</p></section>;
   if (username) return <><OrganizerScores username={username} onLogout={logout} onBackToWelcome={onBackToWelcome} />{error && <p role="alert">{error}</p>}</>;
-  return <section className="organizer-panel">
-    <h2>Organizer Dashboard</h2>
-    <form className="welcome-form" onSubmit={login}>
+  return <div className="admin-login-page">
+    <section className="organizer-panel admin-login-card">
+    <p className="eyebrow">ORGANIZER ACCESS</p>
+    <h2>Admin sign in</h2>
+    <form className="admin-login-form" onSubmit={login}>
       <label htmlFor="admin-user">Admin username</label>
       <select id="admin-user" value={user} onChange={(event) => setUser(event.target.value)}>
         <option>demo1</option><option>demo2</option><option>demo3</option>
@@ -118,5 +120,15 @@ export default function OrganizerPanel({ onBackToWelcome }) {
       <button type="submit" disabled={busy}>{busy ? "Signing in…" : "Admin sign in"}</button>
       <button type="button" className="secondary-button" onClick={onBackToWelcome}>Back to Welcome</button>
     </form>
-  </section>;
+    </section>
+    <footer className="home-event-footer admin-login-artwork" aria-label="GED event artwork">
+      <div className="home-brand-artwork">
+        <picture className="reference-track">
+          <source media="(max-width: 600px)" srcSet="/ged-reference-track-mobile.svg" />
+          <img src="/ged-reference-track.svg" alt="" />
+        </picture>
+        <img className="event-logo" src="/ged-logo.svg" alt="GED" width="76" height="117" />
+      </div>
+    </footer>
+  </div>;
 }

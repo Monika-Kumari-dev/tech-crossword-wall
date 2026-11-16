@@ -351,3 +351,62 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
 @media (max-width: 600px) {
   .home-brand-artwork .event-logo { top: calc(var(--track-height) * .65); right: 3%; }
 }
+
+/* Admin sign-in follows the home page's form and event artwork. */
+.admin-login-page {
+  width: 100%;
+  min-height: 75svh;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.admin-login-page .admin-login-card {
+  width: min(100%, 460px);
+  box-sizing: border-box;
+  margin: 24px auto 0;
+  padding: clamp(24px, 4vw, 40px);
+  border: 0;
+  border-radius: 18px;
+  background: var(--template-paper);
+  color: var(--theme-background);
+}
+.admin-login-card .eyebrow { color: #4f4674; font-size: 12px; }
+.admin-login-card h2 { margin: 8px 0 28px; font-size: clamp(26px, 3vw, 36px); }
+.admin-login-form { display: flex; flex-direction: column; gap: 12px; }
+.admin-login-form label { font-weight: 600; }
+.admin-login-form input,
+.admin-login-form select {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 2px solid #b7c2d6;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--theme-background);
+  font: inherit;
+  color-scheme: light;
+}
+.admin-login-form label:not(:first-child) { margin-top: 8px; }
+.admin-login-form button {
+  min-height: 48px;
+  margin-top: 8px;
+  padding: 12px 24px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--template-green);
+  color: var(--theme-background);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.admin-login-form button:hover { background: var(--theme-blue); color: #fff; }
+.admin-login-form button:disabled { opacity: .6; cursor: wait; }
+.admin-login-form .secondary-button { background: transparent; border: 1px solid #b7c2d6; }
+.admin-login-form :is(input, select, button):focus-visible { outline: 3px solid var(--theme-blue); outline-offset: 3px; }
+.admin-login-form [role="alert"] { margin: 4px 0; color: #9d2030; overflow-wrap: anywhere; }
+.admin-login-artwork {
+  width: 100%;
+  margin: auto 0 0;
+  flex-shrink: 0;
+}
