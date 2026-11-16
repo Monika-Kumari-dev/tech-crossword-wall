@@ -1,8 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 220" preserveAspectRatio="none" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <g stroke-width="6" vector-effect="non-scaling-stroke">
-    <path stroke="#236cff" vector-effect="non-scaling-stroke" d="M1840 8V30Q1840 48 1822 48H300A18 18 0 0 0 300 84H1930"/>
-    <path stroke="#ff2af8" vector-effect="non-scaling-stroke" d="M-10 116H1930"/>
-    <path stroke="#f54501" vector-effect="non-scaling-stroke" d="M1930 150H100A18 18 0 0 0 100 186H1740"/>
-    <path stroke="#3cd85e" vector-effect="non-scaling-stroke" d="M-10 218H1740"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 730 1920 300" preserveAspectRatio="none"><path transform="matrix(1,0,0,-1,1717.0072,909.0491)" stroke-width="9.051" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="#f54501" d="M0 0H-1599.934C-1615.844 0-1628.742-12.898-1628.742-28.808-1628.742-44.718-1615.844-57.615-1599.934-57.615H2.233" />
+
+<path transform="matrix(1,0,0,-1,2073.3333,815.0088)" stroke-width="8.816" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="#236cff" d="M0 0H-1841.604C-1857.101 0-1869.664 12.563-1869.664 28.061-1869.664 43.558-1857.101 56.121-1841.604 56.121H-1.364C9.208 56.121 17.778 64.691 17.778 75.263V178.803" />
+
+<path transform="matrix(1,0,0,-1,-83.6942,861.5732)" stroke-width="7.427" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="#ff2af8" d="M0 0H2030.392" />
+
+<path transform="matrix(1,0,0,-1,-231.4148,1007.92019)" stroke-width="7.427" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="#3cd85e" d="M0 0H1948.192" />
 </svg>
