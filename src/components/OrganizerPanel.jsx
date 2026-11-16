@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchSharedAttendees } from "../utils/attendanceSync";
-import { exportAttendance } from "../utils/attendance";
+import { exportAttendance, getAttendees } from "../utils/attendance";
 
 function OrganizerPanel({ onBackToWelcome }) {
   const [attendees, setAttendees] = useState([]);
@@ -42,11 +42,15 @@ function OrganizerPanel({ onBackToWelcome }) {
         </div>
       </div>
       {error && <p role="alert">{error}</p>}
+      {error && <p>Shared scores could not be loaded. You can export scores saved in this browser below; scores from other devices are not included.</p>}
       {loading && <p role="status">Loading scores from all devices…</p>}
       <div className="organizer-actions">
         <button type="button" onClick={download} disabled={loading || exporting || !!error}>
           {exporting ? "Exporting…" : "Export for Excel (CSV)"}
         </button>
+        {error && <button type="button" onClick={() => exportAttendance(getAttendees().filter((person) => person.sessionId))}>
+          Export this device (CSV)
+        </button>}
         <button type="button" className="secondary-button" onClick={onBackToWelcome}>
           Back to Welcome
         </button>
@@ -58,7 +62,7 @@ function OrganizerPanel({ onBackToWelcome }) {
             {attendees.map((person) => (
               <tr key={person.sessionId}><td>{person.name}</td><td>{person.email}</td><td>{person.score ?? 0}</td><td>{person.questionsPlayed ?? (person.score ?? 0) / 10}</td><td>{person.startedAt ? new Date(person.startedAt).toLocaleString() : "—"}</td></tr>
             ))}
-            {attendees.length === 0 && <tr><td colSpan={5}>No players yet.</td></tr>}
+            {attendees.length === 0 && <tr><td colSpan={5}>{error ? "Shared scores unavailable." : loading ? "Loading players…" : "No players yet."}</td></tr>}
           </tbody>
         </table>
       </div>

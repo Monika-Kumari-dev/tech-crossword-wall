@@ -37,7 +37,13 @@ export async function flushAttendance() {
 }
 export async function fetchSharedAttendees(signal) {
   await flushAttendance();
-  const response = await fetch(endpoint, { cache: 'no-store', signal });
+  let response;
+  try {
+    response = await fetch(endpoint, { cache: 'no-store', signal });
+  } catch (error) {
+    if (signal?.aborted) throw error;
+    throw new Error('Cannot reach shared score storage. Check your connection. For local development, use Netlify Dev; npm run dev serves only the frontend.');
+  }
   let result;
   try { result = await response.json(); } catch { throw new Error('Shared storage needs a Netlify deployment.'); }
   if (!response.ok) throw new Error(result.error || 'Unable to load shared attendees.');

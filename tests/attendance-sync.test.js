@@ -24,6 +24,8 @@ test('offline saves persist, retry succeeds, and simultaneous queued players are
   assert.equal(saved.length, 3);
   assert.equal(Object.keys(JSON.parse(data.get('ged-fy27-sync-queue'))).length, 0);
   assert.equal(events.at(-1), '');
+  globalThis.fetch = async () => { throw new TypeError('Failed to fetch'); };
+  await assert.rejects(fetchSharedAttendees(), /Netlify Dev/);
   globalThis.fetch = async () => new Response('<html>Not found</html>', { status: 404 });
   await assert.rejects(fetchSharedAttendees(), /Netlify deployment/);
   globalThis.fetch = async (_url, options) => {
