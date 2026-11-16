@@ -448,3 +448,19 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
   .admin-login-form button { margin-top: 4px; }
   .admin-login-artwork .home-brand-artwork { --track-height: 10dvh; --logo-width: 24px; }
 }
+
+/* Use the home artwork's proportions instead of flattening the admin tracks. */
+.game-page:has(.admin-login-page) { overflow-x: clip; }
+.admin-login-artwork {
+  width: 100vw;
+  margin-left: calc((100% - 100vw) / 2);
+}
+.admin-login-artwork .home-brand-artwork {
+  --track-height: clamp(140px, 15.625vw, 600px);
+  --logo-width: clamp(48px, 3.958333vw, 152px);
+}
+@media (max-height: 700px) {
+  .admin-login-page .admin-login-card { padding: 16px 24px; }
+  .admin-login-card h2 { margin-bottom: 8px; }
+  .admin-login-form { gap: 4px; }
+}
