@@ -4,6 +4,7 @@ import "./reference.css";
 import "./template.css";
 import usePageRoute, { navigate } from "./hooks/usePageRoute";
 import { recordArrival, updateAttendeeProgress } from "./utils/attendance";
+import { registerPlayer } from "./utils/access";
 import WallPreview from "./components/WallPreview";
 import PhoneGame from "./components/PhoneGame";
 import { getDomainPuzzles } from "./data/domains";
@@ -21,6 +22,8 @@ function App() {
   const domain = "All domains";
   const puzzles = useMemo(() => getDomainPuzzles(domain), [domain]);
   const [teamName, setTeamName] = useState("");
+  const [starting, setStarting] = useState(false);
+  const [loginError, setLoginError] = useState("");
   const [email, setEmail] = useState("");
   const [seconds, setSeconds] = useState(0);
   const [score, setScore] = useState(0);
@@ -151,19 +154,26 @@ function App() {
       setFeedback("Not quite! Check the letters and try again.");
     }
   };
-  const handleStartGame = (event) => {
+  const handleStartGame = async (event) => {
     event.preventDefault();
     if (!teamName.trim()) {
       event.currentTarget.elements.teamName.setCustomValidity("Please enter your name.");
       event.currentTarget.reportValidity();
       return;
     }
+    if (starting) return;
+    setStarting(true);
+    setLoginError("");
+    let registration;
+    try { registration = await registerPlayer(teamName, email); }
+    catch (error) { setLoginError(error.message); setStarting(false); return; }
+    setStarting(false);
     setTeamName(teamName.trim());
     setEmail(email.trim());
     setFeedback("");
     setSelectedWord(puzzles[0]);
 
-    recordArrival(teamName, email, true);
+    recordArrival(teamName, email, true, registration);
     setGameStarted(true);
     navigate("/game");
   };
@@ -294,8 +304,9 @@ function App() {
             onChange={(event) => setEmail(event.target.value)}
           />
 
-          <button type="submit">
-            Start solving <span>→</span>
+          {loginError && <p role="alert">{loginError}</p>}
+          <button type="submit" disabled={starting}>
+            {starting ? "Signing in…" : "Start solving"} <span>→</span>
           </button>
 
           <button

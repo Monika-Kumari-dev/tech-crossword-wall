@@ -7,7 +7,7 @@ test('offline saves persist, retry succeeds, and simultaneous queued players are
   globalThis.localStorage = { getItem: (key) => data.get(key) ?? null, setItem: (key, value) => data.set(key, value) };
   const events = [];
   globalThis.window = { dispatchEvent: (event) => events.push(event.detail) };
-  const person = (id) => ({ sessionId: id, startedAt: '2026-11-17T04:00:00Z', name: `Player ${id}`, email: `${id}@example.com`, score: 10 });
+  const person = (id) => ({ deviceId: '1', playerToken: 'test-token', sessionId: id, startedAt: '2026-11-17T04:00:00Z', name: `Player ${id}`, email: `${id}@example.com`, score: 10 });
   globalThis.fetch = async () => { throw new Error('Offline'); };
   queueAttendee(person('device1'));
   queueAttendee(person('device2'));

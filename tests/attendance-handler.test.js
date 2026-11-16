@@ -29,7 +29,7 @@ test('late retries cannot lower scores and repeat games remain separate', async 
   assert.equal(attendees.length, 2);
   assert.deepEqual(attendees.map((person) => person.score).sort((a, b) => a - b), [10, 50]);
 });
-test('shared attendees are accessible without a password', async () => {
+test('internal storage handler returns records (public route enforces admin authentication)', async () => {
   const response = await get(setup());
   assert.equal(response.status, 200);
   assert.deepEqual(await response.json(), { attendees: [] });

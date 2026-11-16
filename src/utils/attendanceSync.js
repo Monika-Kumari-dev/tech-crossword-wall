@@ -13,7 +13,7 @@ export function queueAttendee(person) {
   const records = queue();
   const key = `${person.sessionId}/${person.score || 0}/${person.questionsPlayed ?? (person.score || 0) / 10}`;
   if (records[key]) return;
-  records[key] = { sessionId: person.sessionId, startedAt: person.startedAt, name: person.name, email: person.email, score: person.score || 0, questionsPlayed: person.questionsPlayed ?? (person.score || 0) / 10 };
+  records[key] = { deviceId: person.deviceId, playerToken: person.playerToken, sessionId: person.sessionId, startedAt: person.startedAt, name: person.name, email: person.email, score: person.score || 0, questionsPlayed: person.questionsPlayed ?? (person.score || 0) / 10 };
   localStorage.setItem(QUEUE_KEY, JSON.stringify(records));
   void flushAttendance();
 }
@@ -22,6 +22,8 @@ export async function flushAttendance() {
   running = true;
   try {
     for (const [key, record] of Object.entries(queue())) {
+      // Keep legacy backups, but do not let records without registration block new players.
+      if (!record.playerToken || !record.deviceId) continue;
       const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(record), signal: AbortSignal.timeout(10000) });
       if (!response.ok) throw new Error('Save failed');
       const result = await response.json();

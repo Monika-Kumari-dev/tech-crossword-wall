@@ -24,30 +24,57 @@ Built with React and Vite. Players solve clues, use hints, track score and time,
 The clue bank comes from GED Activation Content Ideas for November 16–20, 2026. The source content is marked Intuit Confidential and Proprietary.
 
 
-## Shared scores on Netlify (three devices)
+## Three devices and admin access
 
-Deploy this repository through Netlify's Git integration. `netlify.toml` builds the
-Vite site and deploys the attendance Function. Uploading only `dist` does not deploy
-the server function.
+Deploy this repository through Netlify's Git integration. Uploading only `dist`
+does not deploy the attendance Function.
 
-1. Deploy the repository to Netlify, including its Function.
-2. Open the same production site URL on all three devices and start separate games.
-3. Open Organizer Dashboard on any device. Shared scores load automatically and
-   refresh every 10 seconds. Export for Excel downloads one combined CSV with
-   exactly Name, Email ID, and Score.
+Set three **different private passwords**, each at least 12 characters long, in
+Netlify → Project configuration → Environment variables, available to Functions:
 
-No password or environment variable is required. Anyone with the site URL can view
-and export the shared attendee list.
+- `ADMIN_DEMO1_PASSWORD` for admin `demo1`
+- `ADMIN_DEMO2_PASSWORD` for admin `demo2`
+- `ADMIN_DEMO3_PASSWORD` for admin `demo3`
 
-Scores are stored in site-wide Netlify Blobs, separately from the deploy itself.
-Preview deploys use a separate store. Each email appears once, showing the latest
-game's score. Score snapshots are isolated by game session to avoid devices
-replacing each other's progress. Existing browser-only records are not uploaded
-retroactively.
+Redeploy after configuring passwords. No passwords belong in frontend code or
+`VITE_` variables. Without all three passwords, the API refuses access. Changing
+passwords invalidates existing admin and player tokens. Admin cookies expire in
+8 hours, player upload credentials in 24 hours.
 
-If a save fails, the device retains a pending upload and retries every 10 seconds
-and when the connection returns. Keep the site open until the sync notice clears.
-Starting a new player does not delete pending uploads. Shared scores need Internet
-access. `npm run dev` serves only the frontend; use Netlify Dev for local Functions.
+Open these URLs on the three stations, replacing the domain with your site:
 
-Run backend checks with `node --test tests/attendance-handler.test.js`.
+- Device 1: `https://YOUR-SITE.netlify.app/?device=1`
+- Device 2: `https://YOUR-SITE.netlify.app/?device=2`
+- Device 3: `https://YOUR-SITE.netlify.app/?device=3`
+
+Each browser remembers its assigned station; URLs without a station default to 1
+on a new browser. Keep the same station URL on each physical device. Station IDs
+identify event stations, not hardware, so two browsers using device=1 share that
+station's email restriction and records.
+
+The existing name/email form registers players online before starting. Emails
+are trimmed and lowercased and may register once per station. An atomic claim
+prevents simultaneous duplicate registrations on one station. The same email can
+play on the other two stations. Registration checks availability, not email
+ownership; this is not an email-verification flow. A registered email stays used
+even if the player leaves before finishing.
+
+Scores are stored in three separate Netlify Blobs stores. All three admins can
+sign into Organizer Dashboard, view all stations, filter by device, and export
+CSV with a Device column. Anonymous API requests cannot read the attendee list.
+Admin protection is enforced in the Function, including for exports. Auth uses
+HttpOnly, SameSite=Strict cookies; production cookies also use Secure.
+
+Preview deploys use separate stores. This version uses new per-device stores;
+previous records remain in the old shared store and browser backups and are not
+automatically migrated or counted toward the new email restrictions.
+
+Failed score uploads remain in the browser and retry while the page stays open.
+Legacy pending records without registration credentials remain as local backups
+and do not block new uploads. Admins can export local browser records if shared
+storage is unavailable after signing in. Player registration requires connectivity
+so uniqueness can be enforced across browsers.
+
+`npm run dev` runs only the frontend. Use Netlify Dev with the three private
+environment variables for local end-to-end use. Run `npm test`, `npm run lint`
+and `npm run build` for checks.

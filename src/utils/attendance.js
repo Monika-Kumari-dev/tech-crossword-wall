@@ -1,3 +1,4 @@
+import { getDeviceId } from "./access.js";
 import { queueAttendee } from "./attendanceSync.js";
 let lastQueuedProgress = "";
 const ATTENDANCE_KEY = "ged-fy27-attendees";
@@ -11,29 +12,33 @@ export function getAttendees() {
   }
 }
 
-export function recordArrival(name, email, startGame = false) {
+export function recordArrival(name, email, startGame = false, registration = {}) {
   const attendees = getAttendees();
   const key = email.trim().toLowerCase();
-  const existing = attendees.find((person) => person.email === key);
+  const deviceId = registration.deviceId || getDeviceId();
+  const existing = attendees.find((person) => person.email === key && person.deviceId === deviceId);
   const person = {
     ...existing,
+    ...registration,
+    deviceId,
     name: name.trim(),
     email: key,
     arrivedAt: existing?.arrivedAt || new Date().toISOString(),
     gamesStarted: (existing?.gamesStarted || 0) + (startGame ? 1 : 0),
     status: startGame ? "In progress" : existing?.status || "Checked in",
-    ...(startGame ? { sessionId: crypto.randomUUID(), score: 0, questionsPlayed: 0, solvedCount: 0, seconds: 0, startedAt: new Date().toISOString(), endedAt: "" } : {}),
+    ...(startGame ? { sessionId: registration.sessionId || crypto.randomUUID(), score: 0, questionsPlayed: 0, solvedCount: 0, seconds: 0, startedAt: registration.startedAt || new Date().toISOString(), endedAt: "" } : {}),
   };
-  localStorage.setItem(ATTENDANCE_KEY, JSON.stringify([...attendees.filter((item) => item.email !== key), person]));
+  localStorage.setItem(ATTENDANCE_KEY, JSON.stringify([...attendees.filter((item) => item.email !== key || item.deviceId !== deviceId), person]));
   queueAttendee(person);
   return person;
 }
 
 export function updateAttendeeProgress(email, progress) {
   const key = email.trim().toLowerCase();
-  const attendees = getAttendees().map((person) => person.email === key ? { ...person, ...progress } : person);
+  const deviceId = getDeviceId();
+  const attendees = getAttendees().map((person) => person.email === key && person.deviceId === deviceId ? { ...person, ...progress } : person);
   localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(attendees));
-  const person = attendees.find((item) => item.email === key);
+  const person = attendees.find((item) => item.email === key && item.deviceId === deviceId);
   const signature = `${person?.sessionId}/${person?.score}/${person?.questionsPlayed}`;
   if (signature !== lastQueuedProgress) {
     queueAttendee(person);
@@ -59,8 +64,8 @@ export function csvCell(value) {
 
 export function exportAttendance(attendees) {
   const rows = [
-    ["Name", "Email ID", "Score", "Questions Played", "Session ID", "Started At"],
-    ...attendees.map((person) => [person.name, person.email, person.score ?? 0, person.questionsPlayed ?? (person.score ?? 0) / 10, person.sessionId, person.startedAt]),
+    ["Name", "Email ID", "Score", "Questions Played", "Session ID", "Started At", "Device"],
+    ...attendees.map((person) => [person.name, person.email, person.score ?? 0, person.questionsPlayed ?? (person.score ?? 0) / 10, person.sessionId, person.startedAt, person.deviceId || "Legacy"]),
   ];
   const blob = new Blob(["\uFEFF" + rows.map((row) => row.map(csvCell).join(",")).join("\r\n")], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
