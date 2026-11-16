@@ -320,7 +320,7 @@ function App() {
           </p>
           <p className="wall-caption">A little curiosity. A lot of connections.</p>
         </aside>
-        <footer className="home-event-footer"><div className="home-brand-artwork"><picture className="reference-track"><source media="(max-width: 600px)" srcSet="/ged-reference-track-mobile.svg" /><img src="/ged-reference-track.svg" alt="" /></picture><img className="event-logo" src="/ged-logo.svg" alt="GED" width="76" height="117" /></div><p className="footer-text">TUE, NOV 17, 2026 · GED WEEK NOV 16–20</p></footer>
+        <footer className="home-event-footer"><div className="home-brand-artwork"><picture className="reference-track"><source media="(max-width: 600px)" srcSet="/ged-reference-track-mobile.svg" /><img src="/ged-reference-track.svg" alt="" /></picture><img className="event-logo" src="/ged-logo.svg" alt="GED" width="76" height="117" /></div></footer>
       </main>}
 
       {page === "/game" && gameStarted && <main className="game-page play-page">
