@@ -464,3 +464,33 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
   .admin-login-card h2 { margin-bottom: 8px; }
   .admin-login-form { gap: 4px; }
 }
+
+/* Reserve the PDF's full artwork ratio so grid sizing cannot crowd the lines. */
+.admin-login-artwork .home-brand-artwork {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1920 / 300;
+  min-height: 0;
+}
+.admin-login-artwork .reference-track {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+}
+.admin-login-artwork .reference-track img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+.admin-login-artwork .event-logo {
+  top: 56.6667%;
+  right: 3.489583%;
+  width: 3.958333%;
+  height: auto;
+}
+@media (max-width: 600px) {
+  .admin-login-artwork .home-brand-artwork { aspect-ratio: 600 / 220; }
+  .admin-login-artwork .event-logo { top: 65%; right: 3%; width: 8%; }
+}
