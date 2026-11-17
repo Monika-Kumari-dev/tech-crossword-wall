@@ -30,29 +30,27 @@ Deploy this repository through Netlify's Git integration. Uploading only `dist`
 does not deploy the attendance Function.
 
 The first screen is an admin login, before the home page or any other route.
-Use username **`info@techfluence`** on all three TVs. The password comes from the
-existing **`Demo1`** Netlify environment variable (at least 12 characters,
-Production context, Functions scope). `Demo2` and `Demo3` are no longer used.
-Redeploy after configuring the password. Never use a `VITE_` variable for it.
+Use a different login on each TV:
 
-Each TV needs its own signed-in session. Player registration is also blocked on
-the server unless that TV has an active admin session. Signing out returns to the
-entry form. Sessions last 8 hours; refresh restores an active session, and expired
-sessions must sign in again. The previous demo1/demo2/demo3 usernames are retired.
+| TV | Login | Netlify password key | Separate storage |
+| --- | --- | --- | --- |
+| 1 | `Admin1` | `Demo1` | device-1 Blobs store |
+| 2 | `Admin2` | `Demo2` | device-2 Blobs store |
+| 3 | `Admin3` | `Demo3` | device-3 Blobs store |
 
-The login screen uses the reference PDF's vector tracks and logo, and sizes to
-16:9 TV viewports (1920×1080 and 3840×2160) without page scrolling.
+Each password must be at least 12 characters. The same password is allowed.
+Configure all keys in Production context with Functions scope, then redeploy.
+The shared `info@techfluence` login is no longer accepted.
 
-Open these URLs on the three stations, replacing the domain with your site:
+Open the same site URL on all three TVs. The authenticated login assigns the
+station automatically; no `?device=` URL is needed. The server verifies the
+station assignment before registration, so editing a URL or request cannot
+register a player into another station's store. Refresh restores the signed-in
+station from its HttpOnly session. Signing out returns to the admin entry form.
+Each TV browser has its own 8-hour session.
 
-- Device 1: `https://YOUR-SITE.netlify.app/?device=1`
-- Device 2: `https://YOUR-SITE.netlify.app/?device=2`
-- Device 3: `https://YOUR-SITE.netlify.app/?device=3`
-
-Each browser remembers its assigned station; URLs without a station default to 1
-on a new browser. Keep the same station URL on each physical device. Station IDs
-identify event stations, not hardware, so two browsers using device=1 share that
-station's email restriction and records.
+The TV entry form follows the reference PDF's tracks and logo and is sized for
+16:9 viewports at 1920×1080 and 3840×2160 without page scrolling.
 
 The existing name/email form registers players online before starting. Emails
 are trimmed and lowercased and may register once per station. An atomic claim
@@ -61,7 +59,7 @@ play on the other two stations. Registration checks availability, not email
 ownership; this is not an email-verification flow. A registered email stays used
 even if the player leaves before finishing.
 
-Scores are stored in three separate Netlify Blobs stores. The shared admin can
+Scores are stored in three separate Netlify Blobs stores. All three admins can
 open Organizer Dashboard, view all stations, filter by device, and export
 CSV with a Device column. Anonymous API requests cannot read the attendee list.
 Admin protection is enforced in the Function, including for exports. Auth uses

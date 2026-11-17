@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { accessRequest, getDeviceId } from "../utils/access";
+import { accessRequest } from "../utils/access";
 
 export default function AdminLogin({ onAuthenticated }) {
-  const [username, setUsername] = useState("info@techfluence");
+  const [username, setUsername] = useState("Admin1");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -11,7 +11,6 @@ export default function AdminLogin({ onAuthenticated }) {
     if (busy) return;
     setBusy(true); setError("");
     try {
-      getDeviceId();
       await accessRequest("login", { username: username.trim(), password });
       setPassword("");
       onAuthenticated();
@@ -24,11 +23,16 @@ export default function AdminLogin({ onAuthenticated }) {
       <h1>Tech crossword wall</h1>
     </header>
     <section className="admin-entry-card">
+      <p className="admin-company-name">techfluencex</p>
       <p className="eyebrow">ADMIN ACCESS</p>
       <h2>Admin sign in</h2>
       <form className="admin-login-form" onSubmit={submit}>
         <label htmlFor="tv-admin-name">Admin username</label>
-        <input id="tv-admin-name" type="text" autoComplete="username" required value={username} onChange={(event) => setUsername(event.target.value)} />
+        <select id="tv-admin-name" autoComplete="username" value={username} onChange={(event) => setUsername(event.target.value)}>
+          <option value="Admin1">Admin1 — TV 1</option>
+          <option value="Admin2">Admin2 — TV 2</option>
+          <option value="Admin3">Admin3 — TV 3</option>
+        </select>
         <label htmlFor="tv-admin-password">Password</label>
         <input id="tv-admin-password" type="password" autoComplete="current-password" required value={password} onChange={(event) => setPassword(event.target.value)} />
         {error && <p role="alert">{error}</p>}

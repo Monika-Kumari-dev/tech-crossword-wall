@@ -20,24 +20,24 @@ function setup(config = env) {
   }, config);
 }
 const request = async (handler, action, body, cookie) => {
-  if (action === 'register' && !cookie) cookie = await login(handler);
+  if (action === 'register' && !cookie) cookie = await login(handler, `Admin${body.deviceId}`, env[`Demo${body.deviceId}`]);
   return handler(new Request(`https://example.test/api${action ? `?action=${action}` : ''}`, {
   method: body ? 'POST' : 'GET', headers: cookie ? { cookie } : {}, body: body ? JSON.stringify(body) : undefined,
 }));
 };
 const player = (deviceId = '1', email = 'player@example.com') => ({ deviceId, email, name: 'Player', sessionId: crypto.randomUUID(), startedAt: new Date().toISOString() });
-async function login(handler, username = 'info@techfluence', password = env.Demo1) {
+async function login(handler, username = 'Admin1', password = env.Demo1) {
   const response = await request(handler, 'login', { username, password });
   assert.equal(response.status, 200);
   assert.match(response.headers.get('set-cookie'), /HttpOnly; SameSite=Strict/);
   return response.headers.get('set-cookie').split(';')[0];
 }
-test('the shared TV admin can read all devices; anonymous and invalid credentials cannot read or export', async () => {
+test('each TV admin can read all device databases; anonymous and invalid credentials cannot read or export', async () => {
   const handler = setup();
   assert.equal((await request(handler)).status, 401);
-  assert.equal((await request(handler, 'login', { username: 'info@techfluence', password: 'wrong' })).status, 401);
+  assert.equal((await request(handler, 'login', { username: 'Admin1', password: 'wrong' })).status, 401);
   for (const id of ['1', '2', '3']) assert.equal((await request(handler, 'register', player(id))).status, 200);
-  for (const [index, username] of ['info@techfluence'].entries()) {
+  for (const [index, username] of ['Admin1', 'Admin2', 'Admin3'].entries()) {
     const cookie = await login(handler, username, Object.values(env)[index]);
     const result = await (await request(handler, '', undefined, cookie)).json();
     assert.deepEqual(result.attendees.map((row) => row.deviceId), ['1', '2', '3']);
@@ -69,25 +69,38 @@ test('missing admin configuration fails closed and forged cookies are rejected',
   assert.equal((await request(setup(), '', undefined, 'ged-admin=forged.token')).status, 401);
 });
 
-test('the info@techfluence account uses Demo1; missing and short passwords are rejected', async () => {
+test('each device login uses its configured password; shared passwords are supported', async () => {
   const password = 'shared-admin-password';
   const handler = setup({ Demo1: password, Demo2: password, Demo3: password });
-  for (const username of ['info@techfluence']) {
+  for (const username of ['Admin1', 'Admin2', 'Admin3']) {
     const cookie = await login(handler, username, password);
     assert.equal((await request(handler, '', undefined, cookie)).status, 200);
   }
-  for (const config of [{}, { Demo1: 'short' }]) {
+  for (const config of [{}, { Demo1: 'short', Demo2: password, Demo3: password }, { Demo1: password }]) {
     assert.equal((await request(setup(config))).status, 503);
   }
 });
 
-test('players cannot register before admin sign-in and old demo usernames are rejected', async () => {
+test('players cannot register before admin sign-in and the former shared username is rejected', async () => {
   const handler = setup();
   const anonymous = await handler(new Request('https://example.test/api?action=register', { method: 'POST', body: JSON.stringify(player()) }));
   assert.equal(anonymous.status, 401);
-  for (const username of ['demo1', 'demo2', 'demo3']) {
+  for (const username of ['info@techfluence']) {
     assert.equal((await request(handler, 'login', { username, password: env.Demo1 })).status, 401);
   }
   const cookie = await login(handler);
   assert.equal((await request(handler, 'register', player(), cookie)).status, 200);
+});
+
+test('login assigns the server device and cannot register into another database', async () => {
+  const handler = setup();
+  for (const deviceId of ['1', '2', '3']) {
+    const username = `Admin${deviceId}`;
+    const cookie = await login(handler, username, env[`Demo${deviceId}`]);
+    const auth = await (await request(handler, 'auth', undefined, cookie)).json();
+    assert.deepEqual(auth, { username, deviceId });
+    assert.equal((await request(handler, 'register', player(deviceId), cookie)).status, 200);
+    const otherDevice = deviceId === '1' ? '2' : '1';
+    assert.equal((await request(handler, 'register', player(otherDevice, 'other@example.com'), cookie)).status, 403);
+  }
 });

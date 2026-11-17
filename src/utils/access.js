@@ -1,12 +1,8 @@
 export const attendanceEndpoint = '/.netlify/functions/attendance';
 export function getDeviceId() {
-  const requested = new URLSearchParams(window.location.search).get('device');
-  if (['1', '2', '3'].includes(requested)) {
-    localStorage.setItem('ged-device-id', requested);
-    return requested;
-  }
-  if (requested !== null) throw new Error("Use a device URL with ?device=1, ?device=2 or ?device=3.");
-  return localStorage.getItem('ged-device-id') || '1';
+  const deviceId = localStorage.getItem('ged-device-id');
+  if (!['1', '2', '3'].includes(deviceId)) throw new Error('Sign in as Admin1, Admin2 or Admin3 to assign this TV.');
+  return deviceId;
 }
 export async function accessRequest(action, body, method = 'POST') {
   let response;
@@ -22,6 +18,10 @@ export async function accessRequest(action, body, method = 'POST') {
     if (response.status === 401 && action === 'register') window.dispatchEvent(new Event('admin-session-expired'));
     throw new Error(result.error || 'Request failed. Please retry.');
   }
+  if ((action === 'login' || action === 'auth') && ['1', '2', '3'].includes(result.deviceId)) {
+    localStorage.setItem('ged-device-id', result.deviceId);
+  }
+  if (action === 'logout') localStorage.removeItem('ged-device-id');
   return result;
 }
 export async function registerPlayer(name, email) {

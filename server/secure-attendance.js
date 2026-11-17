@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { createAccess, adminCookie } from './access.js';
+import { createAccess, adminCookie, adminDevice } from './access.js';
 import { createAttendanceHandler } from './attendance-handler.js';
 const json = (data, status = 200, headers = {}) => Response.json(data, { status, headers: { 'Cache-Control': 'no-store', ...headers } });
 export function createSecureAttendanceHandler(getStore, env = process.env) {
@@ -15,9 +15,10 @@ export function createSecureAttendanceHandler(getStore, env = process.env) {
       if (action === 'login' && request.method === 'POST') {
         const { username, password } = await request.json();
         if (!access.login(username, password)) return json({ error: 'Incorrect admin username or password.' }, 401);
-        return json({ username }, 200, { 'Set-Cookie': cookie(request, access.sign({ role: 'admin', username, exp: Date.now() + 8 * 3600000 }), 28800) });
+        const deviceId = adminDevice(username);
+        return json({ username, deviceId }, 200, { 'Set-Cookie': cookie(request, access.sign({ role: 'admin', username, deviceId, exp: Date.now() + 8 * 3600000 }), 28800) });
       }
-      if (action === 'auth' && request.method === 'GET') return admin ? json({ username: admin.username }) : json({ error: 'Admin sign-in required.' }, 401);
+      if (action === 'auth' && request.method === 'GET') return admin ? json({ username: admin.username, deviceId: admin.deviceId }) : json({ error: 'Admin sign-in required.' }, 401);
       if (request.method === 'GET') {
         if (!admin) return json({ error: 'Admin sign-in required.' }, 401);
         const attendees = [];
@@ -38,6 +39,7 @@ export function createSecureAttendanceHandler(getStore, env = process.env) {
       const store = getStore(value.deviceId);
       if (action === 'register') {
         if (!admin) return json({ error: 'An admin must sign in on this TV before a player can start.' }, 401);
+        if (value.deviceId !== admin.deviceId) return json({ error: 'This login belongs to a different TV. Sign in again on this TV.' }, 403);
         const email = typeof value.email === 'string' ? value.email.trim().toLowerCase() : '';
         const name = typeof value.name === 'string' ? value.name.trim() : '';
         if (!name || name.length > 150 || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !/^[a-f0-9-]{36}$/i.test(value.sessionId) || !Number.isFinite(Date.parse(value.startedAt))) return json({ error: 'Enter a valid name and email.' }, 400);

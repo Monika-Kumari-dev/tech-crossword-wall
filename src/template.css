@@ -526,7 +526,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
 .admin-entry-card > .eyebrow { color: #4f4674; margin: 0 0 8px; font-size: .75em; }
 .admin-entry-card h2 { margin: 0 0 18px; font-size: 1.7em; line-height: 1.1; }
 .admin-entry-card .admin-login-form { gap: clamp(6px, .9dvh, 16px); }
-.admin-entry-card .admin-login-form :is(input, button) { min-height: clamp(44px, 5dvh, 96px); padding: .6em .85em; }
+.admin-entry-card .admin-login-form :is(input, select, button) { min-height: clamp(44px, 5dvh, 96px); padding: .6em .85em; }
 .admin-entry-card .admin-login-form [role="alert"] { font-size: .85em; line-height: 1.25; }
 .admin-entry-artwork { width: 100%; }
 .admin-entry-artwork .home-brand-artwork { height: auto; aspect-ratio: 1920 / 300; }
@@ -541,4 +541,12 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
   .admin-entry-heading h1 { font-size: 28px; }
   .admin-entry-artwork .home-brand-artwork { aspect-ratio: 600 / 220; }
   .admin-entry-artwork .event-logo { top: 65%; right: 3%; width: 8%; }
+}
+
+.admin-company-name {
+  margin: 0 0 12px;
+  color: #4f4674;
+  font-size: .75em;
+  font-weight: 600;
+  letter-spacing: .03em;
 }

@@ -82,7 +82,7 @@ function OrganizerScores({ onBackToWelcome, username, onLogout }) {
 export default function OrganizerPanel({ onBackToWelcome }) {
   const [username, setUsername] = useState("");
   const [checking, setChecking] = useState(true);
-  const [user, setUser] = useState("info@techfluence");
+  const [user, setUser] = useState("Admin1");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
