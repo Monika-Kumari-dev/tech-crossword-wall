@@ -29,14 +29,14 @@ The clue bank comes from GED Activation Content Ideas for November 16–20, 2026
 Deploy this repository through Netlify's Git integration. Uploading only `dist`
 does not deploy the attendance Function.
 
-Set three **different private passwords**, each at least 12 characters long, in
+Set passwords for all three admins, each at least 12 characters long, in
 Netlify → Project configuration → Environment variables, available to Functions:
 
-- `ADMIN_DEMO1_PASSWORD` for admin `demo1`
-- `ADMIN_DEMO2_PASSWORD` for admin `demo2`
-- `ADMIN_DEMO3_PASSWORD` for admin `demo3`
+- `Demo1` for admin `demo1`
+- `Demo2` for admin `demo2`
+- `Demo3` for admin `demo3`
 
-Redeploy after configuring passwords. No passwords belong in frontend code or
+All three admins may use the same password. Redeploy after configuring passwords. No passwords belong in frontend code or
 `VITE_` variables. Without all three passwords, the API refuses access. Changing
 passwords invalidates existing admin and player tokens. Admin cookies expire in
 8 hours, player upload credentials in 24 hours.

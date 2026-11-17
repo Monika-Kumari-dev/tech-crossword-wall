@@ -1,8 +1,8 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 export const admins = ['demo1', 'demo2', 'demo3'];
 export function createAccess(env = process.env) {
-  const passwords = admins.map((name) => env[`ADMIN_${name.toUpperCase()}_PASSWORD`]);
-  const ready = passwords.every((value) => typeof value === 'string' && value.length >= 12) && new Set(passwords).size === 3;
+  const passwords = ['Demo1', 'Demo2', 'Demo3'].map((key) => env[key]);
+  const ready = passwords.every((value) => typeof value === 'string' && value.length >= 12);
   const secret = passwords.join('\n');
   const equal = (a, b) => { const x = Buffer.from(String(a)); const y = Buffer.from(String(b)); return x.length === y.length && timingSafeEqual(x, y); };
   const sign = (payload) => {

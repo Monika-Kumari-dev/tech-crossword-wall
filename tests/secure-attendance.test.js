@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createSecureAttendanceHandler } from '../server/secure-attendance.js';
-const env = { ADMIN_DEMO1_PASSWORD: 'first-private-password', ADMIN_DEMO2_PASSWORD: 'second-private-password', ADMIN_DEMO3_PASSWORD: 'third-private-password' };
+const env = { Demo1: 'first-private-password', Demo2: 'second-private-password', Demo3: 'third-private-password' };
 function setup(config = env) {
   const stores = new Map();
   return createSecureAttendanceHandler((id) => {
@@ -23,7 +23,7 @@ const request = (handler, action, body, cookie) => handler(new Request(`https://
   method: body ? 'POST' : 'GET', headers: cookie ? { cookie } : {}, body: body ? JSON.stringify(body) : undefined,
 }));
 const player = (deviceId = '1', email = 'player@example.com') => ({ deviceId, email, name: 'Player', sessionId: crypto.randomUUID(), startedAt: new Date().toISOString() });
-async function login(handler, username = 'demo1', password = env.ADMIN_DEMO1_PASSWORD) {
+async function login(handler, username = 'demo1', password = env.Demo1) {
   const response = await request(handler, 'login', { username, password });
   assert.equal(response.status, 200);
   assert.match(response.headers.get('set-cookie'), /HttpOnly; SameSite=Strict/);
@@ -64,4 +64,16 @@ test('registration retries are idempotent; player credentials cannot write anoth
 test('missing admin configuration fails closed and forged cookies are rejected', async () => {
   assert.equal((await request(setup({}))).status, 503);
   assert.equal((await request(setup(), '', undefined, 'ged-admin=forged.token')).status, 401);
+});
+
+test('all three admins can use one shared password while missing and short passwords are rejected', async () => {
+  const password = 'shared-admin-password';
+  const handler = setup({ Demo1: password, Demo2: password, Demo3: password });
+  for (const username of ['demo1', 'demo2', 'demo3']) {
+    const cookie = await login(handler, username, password);
+    assert.equal((await request(handler, '', undefined, cookie)).status, 200);
+  }
+  for (const config of [{ Demo1: password, Demo2: password }, { Demo1: 'short', Demo2: password, Demo3: password }]) {
+    assert.equal((await request(setup(config))).status, 503);
+  }
 });
