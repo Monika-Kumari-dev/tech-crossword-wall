@@ -75,6 +75,9 @@ and do not block new uploads. Admins can export local browser records if shared
 storage is unavailable after signing in. Player registration requires connectivity
 so uniqueness can be enforced across browsers.
 
-`npm run dev` runs only the frontend. Use Netlify Dev with the three private
-environment variables for local end-to-end use. Run `npm test`, `npm run lint`
+`npm run dev` proxies login, registration and score requests to the deployed
+Netlify site at `https://gorgeous-sunflower-331fdb.netlify.app`. Local play therefore
+uses the same records and email restrictions as the live site. Restart Vite after
+changing proxy configuration. Override `NETLIFY_DEV_BACKEND` in `.env.local` to
+use another Netlify site. For isolated local Functions, use Netlify Dev instead. Run `npm test`, `npm run lint`
 and `npm run build` for checks.

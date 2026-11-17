@@ -7,7 +7,7 @@ export function createSecureAttendanceHandler(getStore, env = process.env) {
   const cookie = (request, token, age) => `ged-admin=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${age}${new URL(request.url).protocol === 'https:' ? '; Secure' : ''}`;
   return async (request) => {
     try {
-      if (!access.ready) return json({ error: 'Admin setup required: configure Demo1, Demo2 and Demo3 password values of at least 12 characters in Netlify.' }, 503);
+      if (!access.ready) return json({ error: `Admin setup required: ${access.invalidKeys.join(', ')} must each have a password of at least 12 characters in Netlify's Production environment (Functions scope). The same password is allowed. Redeploy after saving.` }, 503);
       if (request.method === 'POST' && request.headers.get('origin') && request.headers.get('origin') !== new URL(request.url).origin) return json({ error: 'Invalid request origin.' }, 403);
       const action = new URL(request.url).searchParams.get('action');
       const admin = access.verify(adminCookie(request), 'admin');

@@ -1,8 +1,10 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 export const admins = ['demo1', 'demo2', 'demo3'];
 export function createAccess(env = process.env) {
-  const passwords = ['Demo1', 'Demo2', 'Demo3'].map((key) => env[key]);
-  const ready = passwords.every((value) => typeof value === 'string' && value.length >= 12);
+  const keys = ['Demo1', 'Demo2', 'Demo3'];
+  const passwords = keys.map((key) => env[key]);
+  const invalidKeys = keys.filter((_, index) => typeof passwords[index] !== 'string' || passwords[index].length < 12);
+  const ready = invalidKeys.length === 0;
   const secret = passwords.join('\n');
   const equal = (a, b) => { const x = Buffer.from(String(a)); const y = Buffer.from(String(b)); return x.length === y.length && timingSafeEqual(x, y); };
   const sign = (payload) => {
@@ -18,6 +20,6 @@ export function createAccess(env = process.env) {
       return data.role === role && data.exp > Date.now() ? data : null;
     } catch { return null; }
   };
-  return { ready, sign, verify, login: (user, password) => ready && admins.includes(user) && equal(password, passwords[admins.indexOf(user)]) };
+  return { ready, invalidKeys, sign, verify, login: (user, password) => ready && admins.includes(user) && equal(password, passwords[admins.indexOf(user)]) };
 }
 export const adminCookie = (request) => request.headers.get('cookie')?.split(';').map((part) => part.trim()).find((part) => part.startsWith('ged-admin='))?.slice(10);
