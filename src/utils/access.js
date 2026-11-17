@@ -18,7 +18,10 @@ export async function accessRequest(action, body, method = 'POST') {
   } catch { throw new Error('Cannot reach the server. Open the deployed Netlify site and check your connection.'); }
   let result;
   try { result = await response.json(); } catch { throw new Error('Player and admin sign-in require the Netlify Function. Open the deployed Netlify site.'); }
-  if (!response.ok) throw new Error(result.error || 'Request failed. Please retry.');
+  if (!response.ok) {
+    if (response.status === 401 && action === 'register') window.dispatchEvent(new Event('admin-session-expired'));
+    throw new Error(result.error || 'Request failed. Please retry.');
+  }
   return result;
 }
 export async function registerPlayer(name, email) {

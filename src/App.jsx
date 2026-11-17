@@ -4,6 +4,8 @@ import "./reference.css";
 import "./template.css";
 import usePageRoute, { navigate } from "./hooks/usePageRoute";
 import { recordArrival, updateAttendeeProgress } from "./utils/attendance";
+import AdminLogin from "./components/AdminLogin";
+import { accessRequest } from "./utils/access";
 import { registerPlayer } from "./utils/access";
 import WallPreview from "./components/WallPreview";
 import PhoneGame from "./components/PhoneGame";
@@ -18,7 +20,7 @@ import {
   saveTeamResult,
 } from "./utils/scoring";
 
-function App() {
+function CrosswordApp() {
   const domain = "All domains";
   const puzzles = useMemo(() => getDomainPuzzles(domain), [domain]);
   const [teamName, setTeamName] = useState("");
@@ -380,4 +382,20 @@ function App() {
   );
 }
 
-export default App;
+export default function App() {
+  const [authorized, setAuthorized] = useState(null);
+  useEffect(() => {
+    let active = true;
+    const check = () => accessRequest("auth", undefined, "GET")
+      .then(() => { if (active) setAuthorized(true); })
+      .catch(() => { if (active) setAuthorized(false); });
+    const signout = () => setAuthorized(false);
+    void check();
+    window.addEventListener("admin-signout", signout);
+    window.addEventListener("admin-session-expired", signout);
+    return () => { active = false; window.removeEventListener("admin-signout", signout); window.removeEventListener("admin-session-expired", signout); };
+  }, []);
+  if (authorized === null) return <main className="admin-entry-screen"><p role="status">Checking TV access…</p></main>;
+  if (!authorized) return <AdminLogin onAuthenticated={() => { navigate("/", true); setAuthorized(true); }} />;
+  return <CrosswordApp />;
+}

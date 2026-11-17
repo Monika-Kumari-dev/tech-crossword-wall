@@ -29,17 +29,19 @@ The clue bank comes from GED Activation Content Ideas for November 16–20, 2026
 Deploy this repository through Netlify's Git integration. Uploading only `dist`
 does not deploy the attendance Function.
 
-Set passwords for all three admins, each at least 12 characters long, in
-Netlify → Project configuration → Environment variables, available to Functions:
+The first screen is an admin login, before the home page or any other route.
+Use username **`info@techfluence`** on all three TVs. The password comes from the
+existing **`Demo1`** Netlify environment variable (at least 12 characters,
+Production context, Functions scope). `Demo2` and `Demo3` are no longer used.
+Redeploy after configuring the password. Never use a `VITE_` variable for it.
 
-- `Demo1` for admin `demo1`
-- `Demo2` for admin `demo2`
-- `Demo3` for admin `demo3`
+Each TV needs its own signed-in session. Player registration is also blocked on
+the server unless that TV has an active admin session. Signing out returns to the
+entry form. Sessions last 8 hours; refresh restores an active session, and expired
+sessions must sign in again. The previous demo1/demo2/demo3 usernames are retired.
 
-All three admins may use the same password. Redeploy after configuring passwords. No passwords belong in frontend code or
-`VITE_` variables. Without all three passwords, the API refuses access. Changing
-passwords invalidates existing admin and player tokens. Admin cookies expire in
-8 hours, player upload credentials in 24 hours.
+The login screen uses the reference PDF's vector tracks and logo, and sizes to
+16:9 TV viewports (1920×1080 and 3840×2160) without page scrolling.
 
 Open these URLs on the three stations, replacing the domain with your site:
 
@@ -59,8 +61,8 @@ play on the other two stations. Registration checks availability, not email
 ownership; this is not an email-verification flow. A registered email stays used
 even if the player leaves before finishing.
 
-Scores are stored in three separate Netlify Blobs stores. All three admins can
-sign into Organizer Dashboard, view all stations, filter by device, and export
+Scores are stored in three separate Netlify Blobs stores. The shared admin can
+open Organizer Dashboard, view all stations, filter by device, and export
 CSV with a Device column. Anonymous API requests cannot read the attendee list.
 Admin protection is enforced in the Function, including for exports. Auth uses
 HttpOnly, SameSite=Strict cookies; production cookies also use Secure.

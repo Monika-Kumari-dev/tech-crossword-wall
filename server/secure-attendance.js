@@ -37,6 +37,7 @@ export function createSecureAttendanceHandler(getStore, env = process.env) {
       if (!value || !['1', '2', '3'].includes(value.deviceId)) return json({ error: 'Choose a valid device URL (1, 2 or 3).' }, 400);
       const store = getStore(value.deviceId);
       if (action === 'register') {
+        if (!admin) return json({ error: 'An admin must sign in on this TV before a player can start.' }, 401);
         const email = typeof value.email === 'string' ? value.email.trim().toLowerCase() : '';
         const name = typeof value.name === 'string' ? value.name.trim() : '';
         if (!name || name.length > 150 || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !/^[a-f0-9-]{36}$/i.test(value.sessionId) || !Number.isFinite(Date.parse(value.startedAt))) return json({ error: 'Enter a valid name and email.' }, 400);

@@ -82,7 +82,7 @@ function OrganizerScores({ onBackToWelcome, username, onLogout }) {
 export default function OrganizerPanel({ onBackToWelcome }) {
   const [username, setUsername] = useState("");
   const [checking, setChecking] = useState(true);
-  const [user, setUser] = useState("demo1");
+  const [user, setUser] = useState("info@techfluence");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -100,7 +100,7 @@ export default function OrganizerPanel({ onBackToWelcome }) {
     finally { setBusy(false); }
   };
   const logout = async () => {
-    try { await accessRequest("logout"); setUsername(""); }
+    try { await accessRequest("logout"); setUsername(""); window.dispatchEvent(new Event("admin-signout")); }
     catch (err) { setError(err.message); }
   };
   if (checking) return <section className="organizer-panel"><p role="status">Checking admin access…</p></section>;
@@ -111,9 +111,7 @@ export default function OrganizerPanel({ onBackToWelcome }) {
     <h2>Admin sign in</h2>
     <form className="admin-login-form" onSubmit={login}>
       <label htmlFor="admin-user">Admin username</label>
-      <select id="admin-user" value={user} onChange={(event) => setUser(event.target.value)}>
-        <option>demo1</option><option>demo2</option><option>demo3</option>
-      </select>
+      <input id="admin-user" type="text" autoComplete="username" required value={user} onChange={(event) => setUser(event.target.value)} />
       <label htmlFor="admin-password">Password</label>
       <input id="admin-password" type="password" autoComplete="current-password" required value={password} onChange={(event) => setPassword(event.target.value)} />
       {error && <p role="alert">{error}</p>}
