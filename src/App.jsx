@@ -8,6 +8,7 @@ import AdminLogin from "./components/AdminLogin";
 import { accessRequest } from "./utils/access";
 import { registerPlayer } from "./utils/access";
 import WallPreview from "./components/WallPreview";
+import DisplayControls from "./components/DisplayControls";
 import PhoneGame from "./components/PhoneGame";
 import { getDomainPuzzles } from "./data/domains";
 import CrosswordGrid from "./components/CrosswordGrid";
@@ -384,6 +385,7 @@ function CrosswordApp() {
 
 export default function App() {
   const [authorized, setAuthorized] = useState(null);
+  const [displayZoom, setDisplayZoom] = useState(100);
   useEffect(() => {
     let active = true;
     const check = () => accessRequest("auth", undefined, "GET")
@@ -397,5 +399,8 @@ export default function App() {
   }, []);
   if (authorized === null) return <main className="admin-entry-screen"><p role="status">Checking TV access…</p></main>;
   if (!authorized) return <AdminLogin onAuthenticated={() => { navigate("/", true); setAuthorized(true); }} />;
-  return <CrosswordApp />;
+  return <>
+    <div className="display-content" style={{ zoom: displayZoom / 100 }}><CrosswordApp /></div>
+    <DisplayControls zoom={displayZoom} onZoomChange={setDisplayZoom} />
+  </>;
 }
